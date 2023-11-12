@@ -1,14 +1,27 @@
 version: '3.7'
 services:
-  app:
+  web:
+    container_name: chnge_web
+    restart: always
+    platform: linux/arm64
+    image: toreanjoel/chnge:latest_web
+    build: 
+      context: ./web
+      # TODO: Relook at the docker file size
+      dockerfile: ./Dockerfile
+    env_file:
+      - web.env
+    ports:
+      - "4000:3000"
+  api:
     container_name: chnge_api
     restart: always
     platform: linux/arm64
-    image: toreanjoel/chnge:latest
+    image: toreanjoel/chnge:latest_api
     build: 
       context: ./api
       dockerfile: ./Dockerfile
     env_file:
-      - app.env
+      - api.env
     ports:
-      - "3000:5000"
+      - "5000:5000"
