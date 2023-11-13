@@ -36,8 +36,12 @@ const Main = styled.main`
   display: flex;
   flex: 1;
   flex-direction: row;
-  align-items: stretch; // Ensure full height alignment
+  align-items: stretch;
   justify-content: center;
+  max-width: 1200px;
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
   @media (max-width: 768px) {
     flex-direction: column; // Stack the sections on smaller screens
   }
@@ -69,11 +73,7 @@ const ImageSection = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1.5em 0;
-  background-color: ${secondaryColor}; // Use secondary color for the background
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-  @media (max-width: 768px) {
-    width: 100%; // Take full width on smaller screens
-  }
+  background-color: ${secondaryColor};
 `;
 
 const Subtitle = styled.p`
@@ -104,6 +104,20 @@ const Title = styled.h1`
   font-family: "Avenir", sans-serif;
 `;
 
+const ImgWrapper = styled.div`
+    max-width: inherit;
+    width: 130em;
+    position: absolute;
+    bottom: -50%;
+    right: -60em;
+    @media (max-width: 880px) {
+      position: relative;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+    }
+`;
+
 // React component updated for brand consistency
 function App() {
   return (
@@ -128,9 +142,9 @@ function App() {
 
         <ImageSection>
           {/* Placeholder for a phone image */}
-          <div>
+          <ImgWrapper>
             <img alt="App phone screen example" src={phone} style={{ maxWidth: "inherit", width: "100%" }} />
-          </div>
+          </ImgWrapper>
         </ImageSection>
       </Main>
     </Container>
