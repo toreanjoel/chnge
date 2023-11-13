@@ -7,6 +7,14 @@ WORKDIR /app
 # Copy the package.json and yarn.lock files
 COPY package.json yarn.lock ./
 
+# Define the build-time variables
+ARG REACT_APP_FIREBASE_DB_REALTIME
+ARG REACT_APP_CHNGE_API
+
+# Set the environment variables for the build
+ENV REACT_APP_FIREBASE_DB_REALTIME=${REACT_APP_FIREBASE_DB_REALTIME}
+ENV REACT_APP_CHNGE_API=${REACT_APP_CHNGE_API}
+
 # Install dependencies
 RUN yarn install
 

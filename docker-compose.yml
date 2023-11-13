@@ -9,6 +9,8 @@ services:
       context: ./web
       # TODO: Relook at the docker file size
       dockerfile: ./Dockerfile
+      args:
+        - REACT_APP_CHNGE_API=${CHNGE_API}
     env_file:
       - web.env
     ports:

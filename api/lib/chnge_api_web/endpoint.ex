@@ -11,6 +11,9 @@ defmodule ChngeApiWeb.Endpoint do
     same_site: "Lax"
   ]
 
+  # fix for CORS issues using local
+  plug CORSPlug
+
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.

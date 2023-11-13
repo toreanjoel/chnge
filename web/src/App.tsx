@@ -1,6 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import logo from "./assets/logo.png";
 import phone from "./assets/phone.svg";
+import ShowInterestinput from "./components/ShowInterestinput";
 // import google from "./assets/icons8-google-play.svg";
 // import apple from "./assets/icons8-app-store.svg";
 
@@ -115,10 +116,6 @@ const Title = styled.h1`
   line-height: 40px;
 `;
 
-const SpacerHorizontal = styled.div`
-  padding: 0 0.5em;
-`;
-
 const ImgWrapper = styled.div`
     max-width: inherit;
     width: 130em;
@@ -150,10 +147,11 @@ function App() {
               Cultivate lasting habits. Redefining your financial
               choices, one transaction at a time.
             </Subtitle>
+            <ShowInterestinput />
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <Title>
+              {/* <Title>
                 Coming Soon... 
-              </Title>
+              </Title> */}
               {/* <Button href="#">
                 <img alt="Google Play Store" src={google} style={{ width: 30, height: 30, marginRight: 10 }} />
                 Google

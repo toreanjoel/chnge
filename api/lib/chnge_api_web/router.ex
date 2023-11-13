@@ -17,13 +17,15 @@ defmodule ChngeApiWeb.Router do
   scope "/", ChngeApiWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # puublic routes go here
+    # Add the relevant controllers here
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", ChngeApiWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", ChngeApiWeb do
+    pipe_through :api
+
+    post "/lead", LeadsController, :add_lead
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:chnge_api, :dev_routes) do
@@ -40,5 +42,11 @@ defmodule ChngeApiWeb.Router do
       live_dashboard "/dashboard", metrics: ChngeApiWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  # Add a catch-all route at the end of your router
+  scope "/", ChngeApiWeb do
+    get "/*path", NoAccessController, :get_route_not_found
+    post "/*path", NoAccessController, :post_route_not_found
   end
 end
