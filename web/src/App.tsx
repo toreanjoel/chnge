@@ -1,6 +1,8 @@
 import styled, { keyframes } from "styled-components";
 import logo from "./assets/logo.png";
 import phone from "./assets/phone.svg";
+import google from "./assets/icons8-google-play.svg";
+import apple from "./assets/icons8-app-store.svg";
 
 // Updated color palette with darker background
 const primaryColor = "#19F1E6"; // Cyan for accents
@@ -53,16 +55,21 @@ const TextSection = styled.section`
 `;
 
 const Button = styled.a`
-  padding: 1rem 2rem;
-  border-radius: 50px; // More rounded edges
-  background-color: ${secondaryColor};
+  padding: 0.75em;
   color: white;
+  border-radius: 10px;
   text-decoration: none;
   font-weight: bold;
   text-align: center;
   display: inline-block;
   transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  width: 100px;
+  justify-content: center;
+  background-color: ${secondaryColor};
   &:hover {
+    cursor: pointer;
     animation: ${hoverAnimation} 0.5s ease-in-out;
   }
 `;
@@ -74,6 +81,7 @@ const ImageSection = styled.div`
   align-items: center;
   padding: 1.5em 0;
   background-color: ${secondaryColor};
+  z-index: 0;
 `;
 
 const Subtitle = styled.p`
@@ -94,6 +102,7 @@ const ContentSection = styled.div`
   height: 100vh;
   justify-content: center;
   padding: 1.5em 4em;
+  z-index: 2;
 `;
 
 const Title = styled.h1`
@@ -102,6 +111,10 @@ const Title = styled.h1`
   color: ${lightText};
   margin-bottom: 1rem;
   font-family: "Avenir", sans-serif;
+`;
+
+const SpacerHorizontal = styled.div`
+  padding: 0 0.5em;
 `;
 
 const ImgWrapper = styled.div`
@@ -136,7 +149,17 @@ function App() {
               Cultivate lasting habits. Redefining your financial
               destiny, one transaction at a time.
             </Subtitle>
-            <Button href="#">Download</Button>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <Button href="#">
+                <img alt="Google Play Store" src={google} style={{ width: 30, height: 30, marginRight: 10 }} />
+                Google
+              </Button>
+              <SpacerHorizontal />
+              <Button href="#">
+                <img alt="Apple App Store" src={apple} style={{ width: 30, height: 30, marginRight: 10 }} />
+                Apple
+              </Button>
+            </div>
           </TextSection>
         </ContentSection>
 
