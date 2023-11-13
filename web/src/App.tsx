@@ -1,8 +1,8 @@
 import styled, { keyframes } from "styled-components";
 import logo from "./assets/logo.png";
 import phone from "./assets/phone.svg";
-import google from "./assets/icons8-google-play.svg";
-import apple from "./assets/icons8-app-store.svg";
+// import google from "./assets/icons8-google-play.svg";
+// import apple from "./assets/icons8-app-store.svg";
 
 // Updated color palette with darker background
 const primaryColor = "#19F1E6"; // Cyan for accents
@@ -107,11 +107,12 @@ const ContentSection = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 900;
   color: ${lightText};
   margin-bottom: 1rem;
   font-family: "Avenir", sans-serif;
+  line-height: 40px;
 `;
 
 const SpacerHorizontal = styled.div`
@@ -143,12 +144,11 @@ function App() {
           </Header>
           <TextSection>
             <Title>
-              Transform Yourself Through <Highlight>chnge</Highlight>. Master
-              Your Money, Master Your Life.
+              Foster Positive Habits Through <Highlight>chnge</Highlight> with AI.
             </Title>
             <Subtitle>
               Cultivate lasting habits. Redefining your financial
-              destiny, one transaction at a time.
+              choices, one transaction at a time.
             </Subtitle>
             <div style={{ display: "flex", flexDirection: "row" }}>
               <Title>
