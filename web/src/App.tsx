@@ -150,7 +150,10 @@ function App() {
               destiny, one transaction at a time.
             </Subtitle>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <Button href="#">
+              <Title>
+                Coming Soon... 
+              </Title>
+              {/* <Button href="#">
                 <img alt="Google Play Store" src={google} style={{ width: 30, height: 30, marginRight: 10 }} />
                 Google
               </Button>
@@ -158,7 +161,7 @@ function App() {
               <Button href="#">
                 <img alt="Apple App Store" src={apple} style={{ width: 30, height: 30, marginRight: 10 }} />
                 Apple
-              </Button>
+              </Button> */}
             </div>
           </TextSection>
         </ContentSection>
