@@ -12,7 +12,7 @@ config :chnge_api,
 
 # Configures the endpoint
 config :chnge_api, ChngeApiWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: System.get_env("PHX_HOST")],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
     formats: [html: ChngeApiWeb.ErrorHTML, json: ChngeApiWeb.ErrorJSON],
