@@ -81,6 +81,7 @@ const ImageSection = styled.div`
   align-items: center;
   padding: 1.5em 0;
   background-color: ${secondaryColor};
+  background-image: linear-gradient(${primaryColor}, ${secondaryColor});
   z-index: 0;
 `;
 
@@ -92,7 +93,7 @@ const Subtitle = styled.p`
 `;
 
 const Highlight = styled.span`
-  color: ${secondaryColor};
+  color: ${primaryColor};
 `;
 
 const ContentSection = styled.div`
@@ -142,7 +143,7 @@ function App() {
           </Header>
           <TextSection>
             <Title>
-              Transform Yourself through <Highlight>chnge</Highlight>. Master
+              Transform Yourself Through <Highlight>chnge</Highlight>. Master
               Your Money, Master Your Life.
             </Title>
             <Subtitle>
