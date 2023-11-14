@@ -5,12 +5,6 @@ services:
     restart: always
     platform: linux/arm64
     image: toreanjoel/chnge:latest_web
-    build: 
-      context: ./web
-      # TODO: Relook at the docker file size
-      dockerfile: ./Dockerfile
-      args:
-        - REACT_APP_CHNGE_API=${CHNGE_API}
     environment:
       - REACT_APP_CHNGE_API=${CHNGE_API}
     env_file:
@@ -22,9 +16,6 @@ services:
     restart: always
     platform: linux/arm64
     image: toreanjoel/chnge:latest_api
-    build: 
-      context: ./api
-      dockerfile: ./Dockerfile
     env_file:
       - api.env
     ports:
