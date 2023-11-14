@@ -75,7 +75,8 @@ defmodule ChngeApiWeb.LeadsController do
   # This is for now but will most likely need to change later
   defp post_lead(data) do
     url = System.get_env("FIREBASE_DB")
-      <> @lead_db_path <> "/" <> Base.encode64((Map.get(data, "email"))) <> ".json" # expected to append for Firebase
+      <> @lead_db_path <> "/" <> Base.encode64((Map.get(data, "email")))
+      <> ".json?auth=#{System.get_env("FIREBASE_DB_SECRET_LEGACY")}" # expected to append for Firebase
 
     {_status, resp} = HTTPoison.put(url, Jason.encode!(
        data
