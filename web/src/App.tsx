@@ -1,9 +1,11 @@
 import styled, { keyframes } from "styled-components";
 import logo from "./assets/logo.png";
+import icon from "./assets/icon.png";
 import phone from "./assets/phone.svg";
 import ShowInterestinput from "./components/ShowInterestinput";
-// import google from "./assets/icons8-google-play.svg";
-// import apple from "./assets/icons8-app-store.svg";
+import WhatYouGet from "./components/WhatYouGet";
+import google from "./assets/icons8-google-play.svg";
+import apple from "./assets/icons8-app-store.svg";
 
 // Updated color palette with darker background
 const primaryColor = "#19F1E6"; // Cyan for accents
@@ -117,17 +119,53 @@ const Title = styled.h1`
 `;
 
 const ImgWrapper = styled.div`
-    max-width: inherit;
-    width: 130em;
-    position: absolute;
-    bottom: -50%;
-    right: -60em;
-    @media (max-width: 880px) {
-      position: relative;
-      bottom: 0;
-      right: 0;
-      width: 100%;
-    }
+  max-width: inherit;
+  width: 130em;
+  position: absolute;
+  bottom: -50%;
+  right: -60em;
+  @media (max-width: 880px) {
+    position: relative;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+  }
+`;
+
+const NotificationWrapper = styled.div`
+  bottom: 50em;
+  right: 61em;
+  position: absolute;
+`;
+
+const Notification = styled.div`
+  background-color: #ffffff;
+  color: #05141e;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: "Helvetica", "Arial", sans-serif;
+  margin-bottom: 10px;
+  z-index: 3;
+  width: 320px;
+  display: flex;
+  flex-direction: row;
+`;
+
+const NotificationTitle = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+const NotificationBody = styled.div`
+  font-size: 16px;
+`;
+
+const NotifiactionBadge = styled.img`
+  max-width: 50px;
+  height: fit-content;
+  margin-right: 10px;
+  align-self: center;
 `;
 
 // React component updated for brand consistency
@@ -141,34 +179,61 @@ function App() {
           </Header>
           <TextSection>
             <Title>
-              Foster Positive Habits Through <Highlight>chnge</Highlight> with AI.
+              {/* Foster Positive Habits Through <Highlight>chnge</Highlight> with AI. */}
+              Shape Your Financial Future with <Highlight>chnge</Highlight>.
             </Title>
             <Subtitle>
-              Cultivate lasting habits. Redefining your financial
-              choices, one transaction at a time.
+              AI-driven tool is designed to help you build healthier financial
+              habits, day by day.
+              <br />
+              <br />
+              Get ready for a transformation in the way you manage your money,
+              be among the first to take control of your financial wellness.
             </Subtitle>
             <ShowInterestinput />
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              {/* <Title>
-                Coming Soon... 
-              </Title> */}
-              {/* <Button href="#">
+            {/* <WhatYouGet /> */}
+            {/* <div style={{ display: "flex", flexDirection: "row" }}>
+              <Button href="#" style={{ marginRight: 10 }}>
                 <img alt="Google Play Store" src={google} style={{ width: 30, height: 30, marginRight: 10 }} />
                 Google
               </Button>
-              <SpacerHorizontal />
-              <Button href="#">
+              <Button href="#" style={{ marginRight: 10 }}>
                 <img alt="Apple App Store" src={apple} style={{ width: 30, height: 30, marginRight: 10 }} />
                 Apple
-              </Button> */}
-            </div>
+              </Button>
+            </div> */}
           </TextSection>
         </ContentSection>
 
         <ImageSection>
           {/* Placeholder for a phone image */}
           <ImgWrapper>
-            <img alt="App phone screen example" src={phone} style={{ maxWidth: "inherit", width: "100%" }} />
+            <NotificationWrapper>
+              <Notification>
+                <NotifiactionBadge alt="App Icon" src={icon} />
+                <div>
+                  <NotificationTitle>Good Morning! ☕</NotificationTitle>
+                  <NotificationBody>
+                    More of the same today, but buy yourself a coffee - you
+                    deserve it!
+                  </NotificationBody>
+                </div>
+              </Notification>
+              <Notification>
+                <NotifiactionBadge alt="App Icon" src={icon} />
+                <div>
+                  <NotificationTitle>Check in time 👀</NotificationTitle>
+                  <NotificationBody>
+                    Don't forget to add transactions for the day 📊
+                  </NotificationBody>
+                </div>
+              </Notification>
+            </NotificationWrapper>
+            <img
+              alt="App phone screen example"
+              src={phone}
+              style={{ maxWidth: "inherit", width: "100%" }}
+            />
           </ImgWrapper>
         </ImageSection>
       </Main>

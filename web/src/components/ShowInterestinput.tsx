@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 
 const primaryColor = "#19F1E6"; // Cyan for accents
+const secondaryColor = "#168EE5"; // Blue for interactive elements
 const darkBackground = "#00003A"; // Dark blue for the background
 const lightText = "#FFFFFF"; // White for contrast text
 const successText = "#8aff81"; // success green color
@@ -16,7 +17,7 @@ const Container = styled.div`
 
 const Input = styled.input`
   background: transparent;
-  border: 2px solid ${primaryColor};
+  border: 1px solid ${primaryColor};
   padding: 13px;
   color: ${lightText};
   font-size: 18px;
@@ -27,12 +28,12 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  padding: 15px 30px;
   background-color: ${primaryColor};
   color: ${darkBackground};
-  font-size: 18px;
+  font-size: 16px;
   border: none;
   cursor: pointer;
+  width: 200px;
 `;
 
 const ResponseSpan = styled.span`
@@ -75,13 +76,13 @@ export default function ShowInterestInput() {
     <Container>
       <form onSubmit={handleSubmit} style={{ display: "flex" }}>
         <Input
-          placeholder="Add your email"
+          placeholder="Your email to reserve beta access"
           value={email}
           disabled={isLoading}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button type="submit" disabled={isLoading}>
-          Show Interest
+          Notify Me 🔔
         </Button>
       </form>
       <br />
