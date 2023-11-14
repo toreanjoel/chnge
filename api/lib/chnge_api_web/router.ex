@@ -22,7 +22,7 @@ defmodule ChngeApiWeb.Router do
   end
 
   # The v1 version of the API
-  scope "/v1", ChngeApiWeb do
+  scope "/api/v1", ChngeApiWeb do
     pipe_through :api
 
     post "/lead", LeadsController, :add_lead

@@ -53,7 +53,7 @@ export default function ShowInterestInput() {
 
     if (process.env.REACT_APP_CHNGE_API) {
       await axios
-        .post(`${process.env.REACT_APP_CHNGE_API}/v1/lead`, { email })
+        .post(`${process.env.REACT_APP_CHNGE_API}/V1/lead`, { email })
         .then((response: any) => {
           // Handle the response from the server
           setEmail(""); // clear the input field
