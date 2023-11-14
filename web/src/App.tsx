@@ -183,7 +183,7 @@ function App() {
               Shape Your Financial Future with <Highlight>chnge</Highlight>.
             </Title>
             <Subtitle>
-              AI-driven tool is designed to help you build healthier financial
+              AI-driven and designed to help you build healthier financial
               habits, day by day.
               <br />
               <br />
