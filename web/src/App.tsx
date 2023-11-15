@@ -112,7 +112,7 @@ const ContentSection = styled.div`
   padding: 0 2em;
   z-index: 2;
   @media (max-width: 768px) {
-    padding: 3em;
+    padding: 1.5em;
   }
 `;
 
@@ -157,8 +157,7 @@ const PhoneImg = styled.img`
   }
 `
 
-function App(params: any) {
-  const { analytics } = params;
+function App() {
   return (
     <Container>
       
@@ -180,7 +179,7 @@ function App(params: any) {
               Get ready for a transformation in the way you manage your money,
               be among the first to take control of your financial wellness.
             </Subtitle>
-            <InterestInput analytics={analytics} />
+            <InterestInput />
             <WhatYouGet />
             {/* <div style={{ display: "flex", flexDirection: "row" }}>
               <Button href="#" style={{ marginRight: 10 }}>
