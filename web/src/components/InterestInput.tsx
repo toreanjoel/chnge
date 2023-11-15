@@ -55,14 +55,14 @@ const Form = styled.form`
   }
 `;
 
-const ResponseSpan = styled.div`
+const ResponseDiv = styled.div`
   color: ${lightText};
   font-size: 15px;
   font-weight: 300;
-  margin-top: 10px 0;
+  padding: 10px 0;
 `;
 
-export default function ShowInterestInput() {
+export default function InterestInput() {
   const [email, setEmail] = useState("");
   const [isLoading, setLoader] = useState(false);
   const [isSuccessful, setResponseSuccessful] = useState<boolean | null>(null);
@@ -106,11 +106,11 @@ export default function ShowInterestInput() {
         </Button>
       </Form>
       {respose && (
-        <ResponseSpan
+        <ResponseDiv
           style={isSuccessful ? { color: successText } : { color: failText }}
         >
           {respose}
-        </ResponseSpan>
+        </ResponseDiv>
       )}
     </Container>
   );

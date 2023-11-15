@@ -1,19 +1,16 @@
 import styled, { keyframes } from "styled-components";
 import logo from "./assets/logo.png";
-import icon from "./assets/icon.png";
 import phone from "./assets/phone.svg";
-import ShowInterestinput from "./components/ShowInterestinput";
 import WhatYouGet from "./components/WhatYouGet";
 import google from "./assets/icons8-google-play.svg";
 import apple from "./assets/icons8-app-store.svg";
+import NotificationToasts from "./components/NotificationToasts";
+import InterestInput from "./components/InterestInput";
 
 // Updated color palette with darker background
 const primaryColor = "#19F1E6"; // Cyan for accents
 const secondaryColor = "#168EE5"; // Blue for interactive elements
-const tertiaryColor = "#A03AFE"; // Purple for secondary accents
-const darkBackground = "#00003A"; // Dark blue for the background
 const lightText = "#FFFFFF"; // White for contrast text
-const accentText = "#F0F2F5"; // Light grey for secondary text
 
 // Animation for button hover
 const hoverAnimation = keyframes`
@@ -45,8 +42,10 @@ const Main = styled.main`
   justify-content: center;
   max-width: 1200px;
   position: relative;
-  margin: 0 auto;
   overflow: hidden;
+  @media (min-width: 768px) {
+    margin: 0 auto;
+  }
   @media (max-width: 768px) {
     flex-direction: column; // Stack the sections on smaller screens
   }
@@ -86,10 +85,15 @@ const ImageSection = styled.div`
   background-color: ${secondaryColor};
   background-image: linear-gradient(${primaryColor}, ${secondaryColor});
   z-index: 0;
+  @media (max-width: 768px) {
+    bottom: 0;
+    right: 0;
+    position: relative;
+  } 
 `;
 
 const Subtitle = styled.p`
-  font-size: 1.75rem;
+  font-size: 1.3rem;
   color: ${lightText};
   margin-bottom: 2rem;
   font-family: "Avenir", sans-serif;
@@ -105,8 +109,11 @@ const ContentSection = styled.div`
   flex: 1;
   height: 100vh;
   justify-content: center;
-  padding: 1.5em 4em;
+  padding: 0 2em;
   z-index: 2;
+  @media (max-width: 768px) {
+    padding: 3em;
+  }
 `;
 
 const Title = styled.h1`
@@ -120,58 +127,42 @@ const Title = styled.h1`
 
 const ImgWrapper = styled.div`
   max-width: inherit;
-  width: 130em;
   position: absolute;
-  bottom: -50%;
-  right: -60em;
-  @media (max-width: 880px) {
+  bottom: -20em;
+  right: 3em;
+  @media (max-width: 1150px) {
+    right: -3em;
+  }
+  @media (max-width: 900px) {
+    bottom: -12em;
+    right: 10px;
+    width: 100%;
+  }
+  @media (max-width: 768px) {
     position: relative;
     bottom: 0;
     right: 0;
     width: 100%;
+    height: 350px;
   }
 `;
 
-const NotificationWrapper = styled.div`
-  bottom: 50em;
-  right: 61em;
-  position: absolute;
-`;
+const PhoneImg = styled.img`
+  maxWidth: inherit;
+  width: 200%;
+  max-width: 1900px;
+  @media (max-width: 768px) {
+    width: 100%;
+    position: relative;
+  }
+`
 
-const Notification = styled.div`
-  background-color: #ffffff;
-  color: #05141e;
-  padding: 10px 15px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  font-family: "Helvetica", "Arial", sans-serif;
-  margin-bottom: 10px;
-  z-index: 3;
-  width: 320px;
-  display: flex;
-  flex-direction: row;
-`;
-
-const NotificationTitle = styled.div`
-  font-size: 18px;
-  font-weight: bold;
-`;
-
-const NotificationBody = styled.div`
-  font-size: 16px;
-`;
-
-const NotifiactionBadge = styled.img`
-  max-width: 50px;
-  height: fit-content;
-  margin-right: 10px;
-  align-self: center;
-`;
-
-// React component updated for brand consistency
-function App() {
+function App(params: any) {
+  console.log("params")
+  console.log(params)
   return (
     <Container>
+      
       <Main>
         <ContentSection>
           <Header>
@@ -190,8 +181,8 @@ function App() {
               Get ready for a transformation in the way you manage your money,
               be among the first to take control of your financial wellness.
             </Subtitle>
-            <ShowInterestinput />
-            {/* <WhatYouGet /> */}
+            <InterestInput />
+            <WhatYouGet />
             {/* <div style={{ display: "flex", flexDirection: "row" }}>
               <Button href="#" style={{ marginRight: 10 }}>
                 <img alt="Google Play Store" src={google} style={{ width: 30, height: 30, marginRight: 10 }} />
@@ -208,31 +199,10 @@ function App() {
         <ImageSection>
           {/* Placeholder for a phone image */}
           <ImgWrapper>
-            <NotificationWrapper>
-              <Notification>
-                <NotifiactionBadge alt="App Icon" src={icon} />
-                <div>
-                  <NotificationTitle>Good Morning! ☕</NotificationTitle>
-                  <NotificationBody>
-                    More of the same today, but buy yourself a coffee - you
-                    deserve it!
-                  </NotificationBody>
-                </div>
-              </Notification>
-              <Notification>
-                <NotifiactionBadge alt="App Icon" src={icon} />
-                <div>
-                  <NotificationTitle>Check in time 👀</NotificationTitle>
-                  <NotificationBody>
-                    Don't forget to add transactions for the day 📊
-                  </NotificationBody>
-                </div>
-              </Notification>
-            </NotificationWrapper>
-            <img
+            <NotificationToasts />
+            <PhoneImg
               alt="App phone screen example"
               src={phone}
-              style={{ maxWidth: "inherit", width: "100%" }}
             />
           </ImgWrapper>
         </ImageSection>

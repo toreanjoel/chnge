@@ -1,10 +1,35 @@
 import styled from "styled-components";
 
+const ContainerWrapper = styled.div`
+  font-size: 14px;
+  color: #ffffff;
+  margin: 15px 0 0 0;
+`
+
+const Heading = styled.div`
+  font-size: 1rem;
+  font-weight: 600;
+  padding-bottom: 2px;
+`
+
 export default function WhatYouGet() {
   return (
-    <>
-    Incentivizing Sign-Up: Consider adding a short line about the benefits of signing up early, such as exclusive access, potential discounts, or the chance to influence the final product features.
-      Privacy Assurance: Include a small note under the email input field assuring users that their email will be kept private and used only for relevant updates.
-    </>
+    <ContainerWrapper>
+      <div>
+        <div> 🔗 Development Updates</div>
+        <div> 🤐 Early Access</div>
+        <div> 🔓 Premium Features / Discounts</div>
+        <div> 🚧 Influence on Product Outcome</div>
+      </div>
+      <br />
+      <div>
+        <Heading>
+          Privacy:
+        </Heading>
+        <div>
+          Emails will be kept private. You will only recieve updates on progress, early access releases and launch updates.
+        </div>
+      </div>
+    </ContainerWrapper>
   );
 }
