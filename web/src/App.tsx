@@ -158,8 +158,7 @@ const PhoneImg = styled.img`
 `
 
 function App(params: any) {
-  console.log("params")
-  console.log(params)
+  const { analytics } = params;
   return (
     <Container>
       
@@ -181,7 +180,7 @@ function App(params: any) {
               Get ready for a transformation in the way you manage your money,
               be among the first to take control of your financial wellness.
             </Subtitle>
-            <InterestInput />
+            <InterestInput analytics={analytics} />
             <WhatYouGet />
             {/* <div style={{ display: "flex", flexDirection: "row" }}>
               <Button href="#" style={{ marginRight: 10 }}>

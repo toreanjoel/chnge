@@ -62,7 +62,8 @@ const ResponseDiv = styled.div`
   padding: 10px 0;
 `;
 
-export default function InterestInput() {
+export default function InterestInput(params: any) {
+  const { analytics } = params;
   const [email, setEmail] = useState("");
   const [isLoading, setLoader] = useState(false);
   const [isSuccessful, setResponseSuccessful] = useState<boolean | null>(null);
@@ -71,6 +72,7 @@ export default function InterestInput() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoader(true);
+    analytics.logEvent("USER: Submit User Lead")
 
     if (process.env.REACT_APP_CHNGE_API) {
       await axios
@@ -80,12 +82,14 @@ export default function InterestInput() {
           setEmail(""); // clear the input field
           setResponse("Keep an eye out on your email. We we will be in touch");
           setResponseSuccessful(true);
+          analytics.logEvent("SYSTEM: Success Lead Submit")
         })
         .catch((error: any) => {
           // Handle any errors
           setResponseSuccessful(false);
           setResponse("There was an error, unable post interest");
           console.error("There was an error!", error);
+          analytics.logEvent("SYSTEM: Failed Lead Submit")
         });
 
       setLoader(false);
@@ -99,6 +103,7 @@ export default function InterestInput() {
           placeholder="add@email.here"
           value={email}
           disabled={isLoading}
+          onFocus={() => analytics.logEvent("USER: Focus/Interact with lead input field")}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button type="submit" disabled={isLoading}>
