@@ -54,7 +54,6 @@ const Main = styled.main`
 `;
 
 const TextSection = styled.section`
-  padding-right: 2rem;
   margin: 0;
 `;
 
@@ -109,9 +108,8 @@ const ContentSection = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100vh;
   justify-content: center;
-  padding: 0 2em;
+  padding: 2em;
   z-index: 2;
   @media (max-width: 768px) {
     padding: 1.5em;

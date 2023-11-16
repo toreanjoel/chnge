@@ -73,7 +73,7 @@ export default function InterestInput() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoader(true);
-    emitAnalyticsLog("USER: Submit User Lead")
+    emitAnalyticsLog("submit_user_lead")
 
     if (process.env.REACT_APP_CHNGE_API) {
       await axios
@@ -83,14 +83,14 @@ export default function InterestInput() {
           setEmail(""); // clear the input field
           setResponse("Keep an eye out on your email. We will be in touch");
           setResponseSuccessful(true);
-          emitAnalyticsLog("SYSTEM: Success Lead Submit")
+          emitAnalyticsLog("success_lead_submit")
         })
         .catch((error: any) => {
           // Handle any errors
           setResponseSuccessful(false);
           setResponse("There was an error, unable to send request. Try again later.");
           console.error("There was an error!", error);
-          emitAnalyticsLog("SYSTEM: Failed Lead Submit")
+          emitAnalyticsLog("failed_lead_submit")
         });
 
       setLoader(false);
@@ -104,7 +104,7 @@ export default function InterestInput() {
           placeholder="add@email.here"
           value={email}
           disabled={isLoading}
-          onFocus={() => emitAnalyticsLog("USER: Focus/Interact with lead input field")}
+          onFocus={() => emitAnalyticsLog("focus_lead_input")}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button type="submit" disabled={isLoading}>

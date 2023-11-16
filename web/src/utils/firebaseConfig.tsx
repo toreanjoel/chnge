@@ -23,6 +23,4 @@ const emitAnalyticsLog = (event: string) => {
     console.log("No analytics for development env");
 }
 
-console.log("init analytics");
-
 export { app, analytics, emitAnalyticsLog };
