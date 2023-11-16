@@ -1,11 +1,13 @@
 import styled, { keyframes } from "styled-components";
 import logo from "./assets/logo.png";
 import phone from "./assets/phone.svg";
+import { emitAnalyticsLog } from './utils/firebaseConfig';
 import WhatYouGet from "./components/WhatYouGet";
 import google from "./assets/icons8-google-play.svg";
 import apple from "./assets/icons8-app-store.svg";
 import NotificationToasts from "./components/NotificationToasts";
 import InterestInput from "./components/InterestInput";
+import { useEffect } from "react";
 
 // Updated color palette with darker background
 const primaryColor = "#19F1E6"; // Cyan for accents
@@ -158,6 +160,12 @@ const PhoneImg = styled.img`
 `
 
 function App() {
+
+  useEffect(() => {
+    // visiting the landing page
+    emitAnalyticsLog('landing_page_visit');
+  }, [])
+
   return (
     <Container>
       

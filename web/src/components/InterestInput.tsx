@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { getAnalytics, logEvent } from "firebase/analytics";
 import styled from "styled-components";
 import axios from "axios";
+import { emitAnalyticsLog } from "../utils/firebaseConfig"
 
 const primaryColor = "#19F1E6"; // Cyan for accents
 const darkBackground = "#00003A"; // Dark blue for the background
@@ -64,7 +64,7 @@ const ResponseDiv = styled.div`
 `;
 
 export default function InterestInput() {
-  const analytics = getAnalytics();
+  // const analytics = getAnalytics();
   const [email, setEmail] = useState("");
   const [isLoading, setLoader] = useState(false);
   const [isSuccessful, setResponseSuccessful] = useState<boolean | null>(null);
@@ -73,7 +73,7 @@ export default function InterestInput() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoader(true);
-    logEvent(analytics, "USER: Submit User Lead")
+    emitAnalyticsLog("USER: Submit User Lead")
 
     if (process.env.REACT_APP_CHNGE_API) {
       await axios
@@ -81,16 +81,16 @@ export default function InterestInput() {
         .then((response: any) => {
           // Handle the response from the server
           setEmail(""); // clear the input field
-          setResponse("Keep an eye out on your email. We we will be in touch");
+          setResponse("Keep an eye out on your email. We will be in touch");
           setResponseSuccessful(true);
-          logEvent(analytics, "SYSTEM: Success Lead Submit")
+          emitAnalyticsLog("SYSTEM: Success Lead Submit")
         })
         .catch((error: any) => {
           // Handle any errors
           setResponseSuccessful(false);
-          setResponse("There was an error, unable post interest");
+          setResponse("There was an error, unable to send request. Try again later.");
           console.error("There was an error!", error);
-          logEvent(analytics, "SYSTEM: Failed Lead Submit")
+          emitAnalyticsLog("SYSTEM: Failed Lead Submit")
         });
 
       setLoader(false);
@@ -104,7 +104,7 @@ export default function InterestInput() {
           placeholder="add@email.here"
           value={email}
           disabled={isLoading}
-          onFocus={() => logEvent(analytics, "USER: Focus/Interact with lead input field")}
+          onFocus={() => emitAnalyticsLog("USER: Focus/Interact with lead input field")}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button type="submit" disabled={isLoading}>
