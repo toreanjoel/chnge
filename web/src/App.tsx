@@ -177,15 +177,11 @@ function App() {
           <TextSection>
             <Title>
               {/* Foster Positive Habits Through <Highlight>chnge</Highlight> with AI. */}
-              Shape Your Financial Future with <Highlight>chnge</Highlight>.
+              Nurturing Your Net Worth. Turn Transactions into Habit-Driven Gains with <Highlight>chnge</Highlight>.
             </Title>
             <Subtitle>
-              AI-driven and designed to help you build healthier financial
-              habits, day by day.
-              <br />
-              <br />
-              Get ready for a transformation in the way you manage your money,
-              be among the first to take control of your financial wellness.
+              Crafting Healthier Habits, One Transaction at a Time.
+              Personalized Guidance, Integrations, and Data-Driven Insights Using AI Towards Perpetual Financial Wellness.
             </Subtitle>
             <InterestInput />
             <WhatYouGet />
