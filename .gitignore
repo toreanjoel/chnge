@@ -40,3 +40,6 @@ npm-debug.log
 
 # release build - made with mix phx.gen.release --docker
 /rel
+
+# other
+/mob/Chnge/config

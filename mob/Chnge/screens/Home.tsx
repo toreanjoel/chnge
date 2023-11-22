@@ -1,6 +1,8 @@
 import {View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {getAuth} from 'firebase/auth';
 
+const auth = getAuth();
 const AddTransaction = () => {
   return (
     <TouchableOpacity
@@ -11,11 +13,11 @@ const AddTransaction = () => {
   );
 };
 
-const Home = ({navigation}: {navigation: any}) => {
+const Home = () => {
   return (
     <View style={styles.center}>
       <Text style={styles.blackText}>Home</Text>
-      <Button title="Signout" onPress={() => navigation.navigate('Login')} />
+      <Button title="Signout" onPress={() => auth.signOut()} />
       <AddTransaction />
     </View>
   );
