@@ -7,19 +7,19 @@ import Login from './Login';
 import Main from './Main';
 import Register from './Register';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import Onboarding from './Onboarding';
+import {VIEWS} from '../constants/views';
 
 const Stack = createNativeStackNavigator();
 
 const Auth = () => {
   const {user} = useAuth();
-  console.log('user', user);
   const isAuthenticated = !!user;
-  const initalRoute = isAuthenticated ? 'Main' : 'Login';
 
   if (user === undefined) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#168EE5" />
       </View>
     );
   }
@@ -27,14 +27,16 @@ const Auth = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={initalRoute}
-        screenOptions={{headerShown: false}}>
+        initialRouteName={VIEWS.ONBOARDING}
+        screenOptions={{headerShown: false, animation: 'fade'}}>
         {isAuthenticated ? (
-          <Stack.Screen name="Main" component={Main} />
+          <Stack.Screen name={VIEWS.MAIN} component={Main} />
         ) : (
           <>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
+            {/* We need to make sure onboarding happens initially only - store in storage */}
+            <Stack.Screen name={VIEWS.ONBOARDING} component={Onboarding} />
+            <Stack.Screen name={VIEWS.LOGIN} component={Login} />
+            <Stack.Screen name={VIEWS.REGISTER} component={Register} />
           </>
         )}
       </Stack.Navigator>
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#08141E',
   },
 });
 
