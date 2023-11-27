@@ -1,69 +1,136 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React, {useRef, useState, useMemo, useCallback} from 'react';
 import {useAuth} from '../hooks/useAuth';
 import {NavigationProp} from '@react-navigation/native';
 import {VIEWS} from '../constants/views';
 import Calendar from '../components/Calendar';
 import moment from 'moment';
 import {UserInfo} from 'firebase/auth';
-import Transactions from '../components/Transactions';
+import ItemCard from '../components/ItemCard';
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
 const Stack = createNativeStackNavigator();
-
-const AddTransaction = ({onAdd}: {onAdd: any}) => {
-  return (
-    <TouchableOpacity style={styles.bottomRight} onPress={onAdd}>
-      <Text>ADD</Text>
-    </TouchableOpacity>
-  );
-};
+const DATA = [
+  {
+    title: 'Mystical Mountains',
+    content: 'Exploring the serene beauty of the Himalayas.',
+    isIncome: false,
+  },
+  {
+    title: 'Tech Trends',
+    content: 'Latest advancements in artificial intelligence.',
+    isIncome: true,
+  },
+  {
+    title: 'Healthy Eating',
+    content: 'Discovering the benefits of a plant-based diet.',
+    isIncome: true,
+  },
+  {
+    title: 'Space Odyssey',
+    content: 'The future of space travel and exploration.',
+    isIncome: false,
+  },
+  {
+    title: 'Investing 101',
+    content: 'Basics of investing in the stock market for beginners.',
+    isIncome: true,
+  },
+  {
+    title: 'Global Culture',
+    content: 'Understanding diverse cultures around the world.',
+    isIncome: true,
+  },
+  {
+    title: 'Ocean Depths',
+    content: 'Unveiling the mysteries of the deep sea.',
+    isIncome: false,
+  },
+];
 
 const HomeView = ({navigation}: RouterProps) => {
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['25%', '70%'], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleSheetChanges = useCallback(() => {
+    console.log('handleSheetChanges');
+  }, []);
+
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD'),
   );
+
   const {user}: {user: UserInfo} = useAuth();
+
   if (!user) return;
   return (
-    <View style={styles.center}>
-      <View style={styles.spacer} />
-      <View style={styles.spacer} />
-      <Text style={styles.welcomeText}>Hello, {user.email}</Text>
-      <View style={styles.spacer} />
-      <View style={styles.spacer} />
-      <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
-      <View style={styles.spacer} />
-      <Text style={styles.transactionHeader}>Transactions</Text>
-      <View style={styles.spacer} />
-      <Transactions />
-      {/* <Button
-        title="details"
-        onPress={() => navigation.navigate(VIEWS.VIEW_TRANSACTION)}
-      /> */}
-      {/* <AddTransaction
-        onAdd={() => navigation.navigate(VIEWS.ADD_TRANSACTION)}
-      /> */}
-    </View>
+    <GestureHandlerRootView style={styles.mainContainer}>
+      <View style={styles.calendarContainer}>
+        <View style={styles.spacer} />
+        <View style={styles.spacer} />
+        <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
+      </View>
+
+      <View style={styles.transactionsContainer}>
+        <View style={styles.spacer} />
+        <View
+          style={{
+            ...(!!DATA.length
+              ? styles.contentListContainer
+              : styles.contentEmptyContainer),
+          }}>
+          {!!DATA.length ? (
+            <FlatList
+              data={DATA}
+              renderItem={({item}) => (
+                <ItemCard
+                  title={item.title}
+                  content={item.content}
+                  isIncome={item.isIncome}
+                  pressCard={() =>
+                    navigation.navigate(VIEWS.VIEW_TRANSACTION, item)
+                  }
+                />
+              )}
+            />
+          ) : (
+            <Text style={styles.noTransactions}>No Transactions</Text>
+          )}
+        </View>
+      </View>
+
+      <BottomSheetModalProvider>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}>
+          <View style={styles.bottomSheetContentContainer}>
+            <Text>Hello 🎉</Text>
+          </View>
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
+      {/* </View> */}
+    </GestureHandlerRootView>
   );
 };
-
-const TransactionDetailsView = () => {
-  return <Text>Transaction Details</Text>;
-};
-
-/**
- * 1. Stack navigator
- * 2. Add transaction / mood
- * 3. Read transaction / mood
- * 4. Update transaction / mood
- * 5. Delete transaction / mood
- * 6. Add icons
- */
 
 const Home = () => {
   return (
@@ -73,37 +140,26 @@ const Home = () => {
         component={HomeView}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name={VIEWS.VIEW_TRANSACTION}
-        component={TransactionDetailsView}
-      />
-      <Stack.Screen
-        name={VIEWS.ADD_TRANSACTION}
-        component={TransactionDetailsView}
-      />
     </Stack.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
-  center: {
+  mainContainer: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center',
+    flexDirection: 'column',
     backgroundColor: '#08141E',
     paddingHorizontal: 15,
+    paddingBottom: 20,
+    position: 'relative',
   },
-  welcomeText: {
-    fontSize: 18,
-    color: '#fff',
-    alignSelf: 'flex-start',
-    fontWeight: '200',
-  },
-  transactionHeader: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: '200',
-    alignSelf: 'flex-start',
+  contentListContainer: {},
+  contentEmptyContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
   bottomRight: {
     position: 'absolute',
@@ -111,7 +167,22 @@ const styles = StyleSheet.create({
     right: 20,
   },
   spacer: {
-    paddingVertical: 8,
+    paddingVertical: 10,
+  },
+  noTransactions: {
+    color: '#212c35',
+    fontSize: 20,
+  },
+  calendarContainer: {},
+  transactionsContainer: {
+    flex: 2,
+  },
+  bottomSheetContainer: {
+    flex: 1,
+  },
+  bottomSheetContentContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
 });
 

@@ -9,6 +9,7 @@ import Register from './Register';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import Onboarding from './Onboarding';
 import {VIEWS} from '../constants/views';
+import TransactionDetails from './TransactionDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,13 @@ const Auth = () => {
         initialRouteName={VIEWS.ONBOARDING}
         screenOptions={{headerShown: false, animation: 'fade'}}>
         {isAuthenticated ? (
-          <Stack.Screen name={VIEWS.MAIN} component={Main} />
+          <>
+            <Stack.Screen name={VIEWS.MAIN} component={Main} />
+            <Stack.Screen
+              name={VIEWS.VIEW_TRANSACTION}
+              component={TransactionDetails}
+            />
+          </>
         ) : (
           <>
             {/* We need to make sure onboarding happens initially only - store in storage */}

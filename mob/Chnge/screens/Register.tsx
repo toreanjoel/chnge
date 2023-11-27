@@ -15,7 +15,7 @@ import {NavigationProp} from '@react-navigation/native';
 import {FIREBASE_AUTH} from '../config/firebase';
 import {VIEWS} from '../constants/views';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faArrowCircleLeft} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -75,7 +75,7 @@ const Register = ({navigation}: RouterProps) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <View style={styles.navActionContainer}>
-          <FontAwesomeIcon size={28} icon={faArrowCircleLeft} color="#fff" />
+          <FontAwesomeIcon size={20} icon={faArrowLeft} color="#fff" />
         </View>
       </TouchableOpacity>
       {/* Header container */}

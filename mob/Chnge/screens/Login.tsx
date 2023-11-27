@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Platform,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {signInWithEmailAndPassword} from 'firebase/auth';
@@ -55,9 +56,7 @@ const Login = ({navigation}: RouterProps) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={styles.container}>
       {/* Header container */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Log In</Text>
