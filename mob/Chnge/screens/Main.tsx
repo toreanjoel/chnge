@@ -31,12 +31,7 @@ function MyTabBar({state, descriptors, navigation}: any) {
 
         const onPress = () => {
           if (isMiddleButton) {
-            // we make sure we navigate to the home page if we arent already
-            if (state.index !== 0) {
-              navigation.navigate(VIEWS.HOME);
-            }
-
-            console.log('Trigger Bottom sheet');
+            navigation.navigate(VIEWS.ADD_TRANSACTION);
           } else {
             navigation.navigate(route.name);
           }

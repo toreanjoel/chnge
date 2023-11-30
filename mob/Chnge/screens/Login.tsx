@@ -57,99 +57,101 @@ const Login = ({navigation}: RouterProps) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      {/* Header container */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Log In</Text>
-      </View>
-      {/* Form inputs */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputField}>Email Address</Text>
-        <TextInput
-          placeholderTextColor={'#6E6E6E'}
-          value={email}
-          style={styles.input}
-          placeholder="email@domain.here"
-          autoCapitalize="none"
-          onChangeText={value => setEmail(value)}
-        />
-        <Text style={styles.inputField}>Password</Text>
-        <TextInput
-          placeholderTextColor={'#6E6E6E'}
-          value={password}
-          style={styles.input}
-          placeholder="Password"
-          autoCapitalize="none"
-          onChangeText={value => setPassword(value)}
-          secureTextEntry
-        />
-      </View>
-
-      {/* Error message */}
-      {!!errorMsg && <Text style={styles.errorMsg}>{errorMsg}</Text>}
-
-      {/* Login button */}
-      {loadingNormal ? (
-        <View style={styles.loginBtnLoaderContainer}>
-          <ActivityIndicator size="large" color="#168EE5" />
+      <ScrollView>
+        {/* Header container */}
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Log In</Text>
         </View>
-      ) : (
-        <TouchableOpacity onPress={signIn}>
-          <View style={styles.loginBtnContainer}>
-            <Text style={styles.loginBtn}>Log In</Text>
-          </View>
-        </TouchableOpacity>
-      )}
+        {/* Form inputs */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputField}>Email Address</Text>
+          <TextInput
+            placeholderTextColor={'#6E6E6E'}
+            value={email}
+            style={styles.input}
+            placeholder="email@domain.here"
+            autoCapitalize="none"
+            onChangeText={value => setEmail(value)}
+          />
+          <Text style={styles.inputField}>Password</Text>
+          <TextInput
+            placeholderTextColor={'#6E6E6E'}
+            value={password}
+            style={styles.input}
+            placeholder="Password"
+            autoCapitalize="none"
+            onChangeText={value => setPassword(value)}
+            secureTextEntry
+          />
+        </View>
 
-      {/* Forgot Password */}
-      <View style={styles.forgotPasswordContainer}>
-        <TouchableOpacity
-          onPress={() => console.log('Navigate: Forgot Password')}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Error message */}
+        {!!errorMsg && <Text style={styles.errorMsg}>{errorMsg}</Text>}
 
-      {/* Register */}
-      <View style={styles.createAccountContainer}>
-        <Text style={styles.newToAppText}>New to chnge?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate(VIEWS.REGISTER)}>
-          <Text style={styles.createAccountText}>Create Account</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Social sign up */}
-      <View style={styles.socialsDividerContainer}>
-        <View style={styles.socialsDividerLine} />
-        <Text style={styles.socialsDividerText}>OR</Text>
-        <View style={styles.socialsDividerLine} />
-      </View>
-
-      {/* Login button (Google) */}
-      <View style={styles.socialSignInContainer}>
-        {loadingGoogle ? (
+        {/* Login button */}
+        {loadingNormal ? (
           <View style={styles.loginBtnLoaderContainer}>
             <ActivityIndicator size="large" color="#168EE5" />
           </View>
         ) : (
-          <TouchableOpacity disabled onPress={socialSignInGoogle}>
-            <View style={styles.loginSocialBtnContainer}>
-              <Text style={styles.loginBtn}>Continue with Google</Text>
+          <TouchableOpacity onPress={signIn}>
+            <View style={styles.loginBtnContainer}>
+              <Text style={styles.loginBtn}>Log In</Text>
             </View>
           </TouchableOpacity>
         )}
 
-        {/* Login button (Apple) */}
-        {loadingApple ? (
-          <View style={styles.loginBtnLoaderContainer}>
-            <ActivityIndicator size="large" color="#168EE5" />
-          </View>
-        ) : (
-          <TouchableOpacity disabled onPress={socialSignInApple}>
-            <View style={styles.loginSocialBtnContainer}>
-              <Text style={styles.loginBtn}>Continue with Apple</Text>
-            </View>
+        {/* Forgot Password */}
+        <View style={styles.forgotPasswordContainer}>
+          <TouchableOpacity
+            onPress={() => console.log('Navigate: Forgot Password')}>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
-        )}
-      </View>
+        </View>
+
+        {/* Register */}
+        <View style={styles.createAccountContainer}>
+          <Text style={styles.newToAppText}>New to chnge?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate(VIEWS.REGISTER)}>
+            <Text style={styles.createAccountText}>Create Account</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Social sign up */}
+        <View style={styles.socialsDividerContainer}>
+          <View style={styles.socialsDividerLine} />
+          <Text style={styles.socialsDividerText}>OR</Text>
+          <View style={styles.socialsDividerLine} />
+        </View>
+
+        {/* Login button (Google) */}
+        <View style={styles.socialSignInContainer}>
+          {loadingGoogle ? (
+            <View style={styles.loginBtnLoaderContainer}>
+              <ActivityIndicator size="large" color="#168EE5" />
+            </View>
+          ) : (
+            <TouchableOpacity disabled onPress={socialSignInGoogle}>
+              <View style={styles.loginSocialBtnContainer}>
+                <Text style={styles.loginBtn}>Continue with Google</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {/* Login button (Apple) */}
+          {loadingApple ? (
+            <View style={styles.loginBtnLoaderContainer}>
+              <ActivityIndicator size="large" color="#168EE5" />
+            </View>
+          ) : (
+            <TouchableOpacity disabled onPress={socialSignInApple}>
+              <View style={styles.loginSocialBtnContainer}>
+                <Text style={styles.loginBtn}>Continue with Apple</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

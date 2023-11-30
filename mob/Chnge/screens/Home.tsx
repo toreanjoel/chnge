@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Button} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useRef, useState, useMemo, useCallback} from 'react';
 import {useAuth} from '../hooks/useAuth';
@@ -8,10 +8,7 @@ import Calendar from '../components/Calendar';
 import moment from 'moment';
 import {UserInfo} from 'firebase/auth';
 import ItemCard from '../components/ItemCard';
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 interface RouterProps {
@@ -89,6 +86,13 @@ const HomeView = ({navigation}: RouterProps) => {
       </View>
 
       <View style={styles.transactionsContainer}>
+        {/* Tis is the overview view - generated to view with AI for the current day */}
+        {/* TODO: conditionally show if there is data */}
+        {/* <View style={styles.spacer} /> */}
+        {/* <Button
+          onPress={() => handlePresentModalPress()}
+          title="Daily Overview"
+        /> */}
         <View style={styles.spacer} />
         <View
           style={{
@@ -123,7 +127,10 @@ const HomeView = ({navigation}: RouterProps) => {
           snapPoints={snapPoints}
           onChange={handleSheetChanges}>
           <View style={styles.bottomSheetContentContainer}>
-            <Text>Hello 🎉</Text>
+            <Text>
+              Daily overview will come here with what happened and what can be
+              done better
+            </Text>
           </View>
         </BottomSheetModal>
       </BottomSheetModalProvider>

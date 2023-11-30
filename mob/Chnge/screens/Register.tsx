@@ -8,6 +8,7 @@ import {
   Platform,
   Text,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
@@ -78,91 +79,94 @@ const Register = ({navigation}: RouterProps) => {
           <FontAwesomeIcon size={20} icon={faArrowLeft} color="#fff" />
         </View>
       </TouchableOpacity>
-      {/* Header container */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Register</Text>
-      </View>
-      {/* Form inputs */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputField}>Email Address</Text>
-        <TextInput
-          placeholderTextColor={'#6E6E6E'}
-          value={email}
-          style={styles.input}
-          placeholder="email@domain.here"
-          autoCapitalize="none"
-          onChangeText={value => setEmail(value)}
-        />
-        <Text style={styles.inputField}>Password</Text>
-        <TextInput
-          placeholderTextColor={'#6E6E6E'}
-          value={password}
-          style={styles.input}
-          placeholder="Password"
-          autoCapitalize="none"
-          onChangeText={value => setPassword(value)}
-          secureTextEntry
-        />
-        <Text style={styles.inputField}>Confirm Password</Text>
-        <TextInput
-          placeholderTextColor={'#6E6E6E'}
-          value={confirmPassword}
-          style={styles.input}
-          placeholder="Confirm Password"
-          autoCapitalize="none"
-          onChangeText={value => setconfirmPassword(value)}
-          secureTextEntry
-        />
-      </View>
-      {/* Error message */}
-      {!!errorMsg && <Text style={styles.errorMsg}>{errorMsg}</Text>}
-      {/* Sign up button */}
-      {loadingNormal ? (
-        <View style={styles.loginBtnLoaderContainer}>
-          <ActivityIndicator size="large" color="#168EE5" />
+      <View style={styles.spacer} />
+      <ScrollView>
+        {/* Header container */}
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Register</Text>
         </View>
-      ) : (
-        <TouchableOpacity onPress={signUp}>
-          <View style={styles.signUpBtnContainer}>
-            <Text style={styles.loginBtn}>Sign Up</Text>
-          </View>
-        </TouchableOpacity>
-      )}
-
-      {/* Social sign up */}
-      <View style={styles.socialsDividerContainer}>
-        <View style={styles.socialsDividerLine} />
-        <Text style={styles.socialsDividerText}>OR</Text>
-        <View style={styles.socialsDividerLine} />
-      </View>
-
-      {/* Login button (Google) */}
-      <View style={styles.socialSignInContainer}>
-        {loadingGoogle ? (
+        {/* Form inputs */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputField}>Email Address</Text>
+          <TextInput
+            placeholderTextColor={'#6E6E6E'}
+            value={email}
+            style={styles.input}
+            placeholder="email@domain.here"
+            autoCapitalize="none"
+            onChangeText={value => setEmail(value)}
+          />
+          <Text style={styles.inputField}>Password</Text>
+          <TextInput
+            placeholderTextColor={'#6E6E6E'}
+            value={password}
+            style={styles.input}
+            placeholder="Password"
+            autoCapitalize="none"
+            onChangeText={value => setPassword(value)}
+            secureTextEntry
+          />
+          <Text style={styles.inputField}>Confirm Password</Text>
+          <TextInput
+            placeholderTextColor={'#6E6E6E'}
+            value={confirmPassword}
+            style={styles.input}
+            placeholder="Confirm Password"
+            autoCapitalize="none"
+            onChangeText={value => setconfirmPassword(value)}
+            secureTextEntry
+          />
+        </View>
+        {/* Error message */}
+        {!!errorMsg && <Text style={styles.errorMsg}>{errorMsg}</Text>}
+        {/* Sign up button */}
+        {loadingNormal ? (
           <View style={styles.loginBtnLoaderContainer}>
             <ActivityIndicator size="large" color="#168EE5" />
           </View>
         ) : (
-          <TouchableOpacity disabled onPress={socialSignInGoogle}>
-            <View style={styles.loginSocialBtnContainer}>
-              <Text style={styles.loginBtn}>Continue with Google</Text>
+          <TouchableOpacity onPress={signUp}>
+            <View style={styles.signUpBtnContainer}>
+              <Text style={styles.loginBtn}>Sign Up</Text>
             </View>
           </TouchableOpacity>
         )}
 
-        {/* Login button (Apple) */}
-        {loadingApple ? (
-          <View style={styles.loginBtnLoaderContainer}>
-            <ActivityIndicator size="large" color="#168EE5" />
-          </View>
-        ) : (
-          <TouchableOpacity disabled onPress={socialSignInApple}>
-            <View style={styles.loginSocialBtnContainer}>
-              <Text style={styles.loginBtn}>Continue with Apple</Text>
+        {/* Social sign up */}
+        <View style={styles.socialsDividerContainer}>
+          <View style={styles.socialsDividerLine} />
+          <Text style={styles.socialsDividerText}>OR</Text>
+          <View style={styles.socialsDividerLine} />
+        </View>
+
+        {/* Login button (Google) */}
+        <View style={styles.socialSignInContainer}>
+          {loadingGoogle ? (
+            <View style={styles.loginBtnLoaderContainer}>
+              <ActivityIndicator size="large" color="#168EE5" />
             </View>
-          </TouchableOpacity>
-        )}
-      </View>
+          ) : (
+            <TouchableOpacity disabled onPress={socialSignInGoogle}>
+              <View style={styles.loginSocialBtnContainer}>
+                <Text style={styles.loginBtn}>Continue with Google</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {/* Login button (Apple) */}
+          {loadingApple ? (
+            <View style={styles.loginBtnLoaderContainer}>
+              <ActivityIndicator size="large" color="#168EE5" />
+            </View>
+          ) : (
+            <TouchableOpacity disabled onPress={socialSignInApple}>
+              <View style={styles.loginSocialBtnContainer}>
+                <Text style={styles.loginBtn}>Continue with Apple</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -171,6 +175,9 @@ const styles = StyleSheet.create({
   navActionContainer: {
     marginVertical: 20,
     flex: 1,
+  },
+  spacer: {
+    paddingVertical: 10,
   },
   container: {
     flex: 1,

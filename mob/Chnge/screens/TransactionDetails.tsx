@@ -1,26 +1,33 @@
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {faArrowLeft, faEdit} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {VIEWS} from '../constants/views';
 
 const TransactionDetails = ({navigation, route}: any) => {
   const {title, content, isIncome} = route.params;
+  const [transactionData, setTransactionData] = useState({
+    title,
+    content,
+    isIncome,
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <View style={styles.spacer} />
-        <View>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <View style={[styles.navActionContainer]}>
-              <FontAwesomeIcon size={20} icon={faArrowLeft} color="#fff" />
-            </View>
+        <View style={styles.transactionActonContainer}>
+          <TouchableOpacity
+            style={styles.backActionWrapper}
+            onPress={() => navigation.goBack()}>
+            <FontAwesomeIcon size={20} icon={faArrowLeft} color="#fff" />
           </TouchableOpacity>
-          {/* <TouchableOpacity onPress={() => console.log('Edit')}>
-          <View
-            style={[styles.navActionContainer, styles.navActionEditContainer]}>
+          <View style={styles.spacerActionWrapper} />
+          <TouchableOpacity
+            style={styles.editActionWrapper}
+            onPress={() => navigation.navigate(VIEWS.EDIT_TRANSACTION)}>
             <FontAwesomeIcon size={20} icon={faEdit} color="#fff" />
-          </View>
-        </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
         <View style={styles.spacer} />
         <View
@@ -46,11 +53,25 @@ const TransactionDetails = ({navigation, route}: any) => {
 };
 
 const styles = StyleSheet.create({
+  transactionActonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  spacerActionWrapper: {
+    flex: 1,
+  },
+  backActionWrapper: {
+    alignSelf: 'flex-start',
+    padding: 5,
+  },
+  editActionWrapper: {
+    alignSelf: 'flex-start',
+    padding: 5,
+  },
   navActionContainer: {
     marginVertical: 10,
-  },
-  navActionEditContainer: {
-    alignSelf: 'flex-end',
   },
   container: {
     flex: 1,

@@ -7,6 +7,7 @@ const VIEWS = {
   HOME: 'home',
   SETTINGS: 'settings',
   ADD_TRANSACTION: 'add-transaction',
+  EDIT_TRANSACTION: 'edit-transaction',
   VIEW_TRANSACTION: 'view-transaction',
 };
 
