@@ -18,7 +18,10 @@ const Onboarding = ({navigation}: RouterProps) => {
   return (
     <View style={styles.center}>
       <View style={styles.onboardingImg}>
-        <Image source={require('../assets/icon.png')} style={styles.Image} />
+        <Image
+          source={require('../src/assets/icon.png')}
+          style={styles.Image}
+        />
       </View>
       <View style={styles.onboardingContainer}>
         {/* <View style={styles.onboardingContent}></View> */}
