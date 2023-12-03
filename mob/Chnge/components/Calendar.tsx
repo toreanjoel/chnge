@@ -7,7 +7,6 @@ const Calendar = ({onSelectDate, selected}: any) => {
   const [dates, setDates] = useState<any>([]);
   const [scrollPosition, setScrollPosition] = useState<any>(0);
   const [currentMonth, setCurrentMonth] = useState<any>();
-  console.log(scrollPosition)
   // get the dates from today to 10 days from now, format them as strings and store them in state
   const getDates = () => {
     const dateRange = [];

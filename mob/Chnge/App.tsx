@@ -9,8 +9,8 @@ function App(): JSX.Element {
     };
 
     init().finally(async () => {
+      // hide spash screen
       await BootSplash.hide({fade: true});
-      console.log('BootSplash has been hidden successfully');
     });
   }, []);
 

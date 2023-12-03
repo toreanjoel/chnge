@@ -38,6 +38,9 @@ npm-debug.log
 # DS store files from mac
 .DS_Store
 
+# vscode files
+.vscode
+
 # release build - made with mix phx.gen.release --docker
 /rel
 

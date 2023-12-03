@@ -4,12 +4,20 @@ import {faArrowLeft, faEdit} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {VIEWS} from '../constants/views';
 
+const TRANSACTION_TYPE = {
+  income: 'income',
+  expense: 'expense',
+};
+
 const TransactionDetails = ({navigation, route}: any) => {
-  const {title, content, isIncome} = route.params;
+  const {title, description, type} = route.params;
+  console.log(title);
+  console.log(description);
+  console.log(type);
   const [transactionData, setTransactionData] = useState({
     title,
-    content,
-    isIncome,
+    description,
+    type,
   });
 
   return (
@@ -34,7 +42,9 @@ const TransactionDetails = ({navigation, route}: any) => {
           style={[
             [
               styles.cardContainer,
-              isIncome ? styles.cardBorderIncome : styles.cardBorderExpense,
+              type === TRANSACTION_TYPE.income
+                ? styles.cardBorderIncome
+                : styles.cardBorderExpense,
             ],
           ]}>
           <View style={styles.content}>
@@ -43,7 +53,7 @@ const TransactionDetails = ({navigation, route}: any) => {
             </Text>
           </View>
         </View>
-        <Text style={styles.subText}>{content}</Text>
+        <Text style={styles.subText}>{description}</Text>
       </View>
       <View style={styles.moodContainer}>
         <Text style={styles.moodText}>rating</Text>

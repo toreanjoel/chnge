@@ -1,19 +1,26 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
+const TRANSACTION_TYPE = {
+  income: 'income',
+  expense: 'expense',
+};
+
 type Props = {
   pressCard?: () => void;
   title: string;
   content: string;
-  isIncome: boolean;
+  transactionType: string;
 };
 
-const ItemCard = ({pressCard, title, content, isIncome = false}: Props) => {
+const ItemCard = ({pressCard, title, content, transactionType}: Props) => {
   return (
     <TouchableOpacity
       style={[
         styles.cardContainer,
-        isIncome ? styles.cardBorderIncome : styles.cardBorderExpense,
+        transactionType === TRANSACTION_TYPE.income
+          ? styles.cardBorderIncome
+          : styles.cardBorderExpense,
       ]}
       onPress={pressCard}>
       <View style={styles.bar} />
@@ -21,7 +28,9 @@ const ItemCard = ({pressCard, title, content, isIncome = false}: Props) => {
         <Text
           style={[
             styles.tagContainer,
-            isIncome ? styles.tagIncome : styles.tagExpense,
+            transactionType === TRANSACTION_TYPE.income
+              ? styles.tagIncome
+              : styles.tagExpense,
           ]}>
           Income
         </Text>

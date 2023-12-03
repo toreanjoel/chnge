@@ -5,7 +5,7 @@ enum TransactionType {
 
 export interface TransactionItem {
   title: string;
-  descriptions: string;
+  description: string;
   type: TransactionType;
   score: number;
 }
@@ -18,5 +18,6 @@ export interface TransactionHistory {
 
 export interface Transactions {
   current: string;
+  selected: string;
   history: Record<string, TransactionHistory>;
 }
