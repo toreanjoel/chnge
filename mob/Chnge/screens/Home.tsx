@@ -5,8 +5,7 @@ import {useAuth} from '../hooks/useAuth';
 import {NavigationProp} from '@react-navigation/native';
 import {VIEWS} from '../constants/views';
 import Calendar from '../components/Calendar';
-import {TransactionHistory} from '../types/transactions';
-import {UserInfo} from 'firebase/auth';
+import {TransactionHistory, TransactionItem} from '../types/transactions';
 import ItemCard from '../components/ItemCard';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {onValue, ref, update} from 'firebase/database';
@@ -19,11 +18,11 @@ interface RouterProps {
 const Stack = createNativeStackNavigator();
 
 const HomeView = ({navigation}: RouterProps) => {
-  const {user}: {user: UserInfo} = useAuth();
+  const {user} = useAuth();
   const [transactions, setTransactions] = useState<TransactionHistory>();
   const [selectedDate, setSelectedDate] = useState();
 
-  // get the initial transactions data
+  // set the current initial date
   useEffect(() => {
     if (user) {
       onValue(
@@ -36,6 +35,7 @@ const HomeView = ({navigation}: RouterProps) => {
     }
   }, [user]);
 
+  // get transaction date for the selected date
   useEffect(() => {
     if (user) {
       onValue(
@@ -53,6 +53,22 @@ const HomeView = ({navigation}: RouterProps) => {
 
   if (!user) {
     return false;
+  }
+
+  // we check if there are transcations
+  function hasTransactions() {
+    if (!transactions) {
+      return false;
+    }
+    const {items} = transactions;
+    return items ? Object.keys(transactions.items).length !== 0 : 0;
+  }
+
+  // take a map and return the flatlist with just the data
+  function transactionToList(data: TransactionHistory['items']) {
+    return Object.keys(data).map(item => {
+      return data[item];
+    });
   }
 
   return (
@@ -74,25 +90,28 @@ const HomeView = ({navigation}: RouterProps) => {
         <View style={styles.spacer} />
         <View
           style={{
-            ...(transactions
+            ...(hasTransactions()
               ? styles.contentListContainer
               : styles.contentEmptyContainer),
           }}>
-          {transactions ? (
+          {hasTransactions() ? (
             <FlatList
-              data={transactions.items}
+              data={transactions ? transactionToList(transactions.items) : []}
               renderItem={({item}) => {
                 if (!item) {
                   return null;
                 }
-
                 return (
                   <ItemCard
                     title={item.title}
                     content={item.description}
                     transactionType={item.type}
                     pressCard={() =>
-                      navigation.navigate(VIEWS.VIEW_TRANSACTION, item)
+                      navigation.navigate(VIEWS.VIEW_TRANSACTION, {
+                        ...item,
+                        selectedDate,
+                        id: item.id,
+                      })
                     }
                   />
                 );

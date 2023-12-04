@@ -7,18 +7,58 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import uuid from 'react-native-uuid';
 import {
   faArrowLeft,
   faThumbsUp,
   faThumbsDown,
 } from '@fortawesome/free-solid-svg-icons';
+import Toast from 'react-native-simple-toast';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {VIEWS} from '../constants/views';
+import {TransactionRating, TransactionType} from '../types/transactions';
+import {useAuth} from '../hooks/useAuth';
+import {FIREBASE_DB} from '../config/firebase';
+import {onValue, ref, update} from 'firebase/database';
 
 const TransactionAdd = ({navigation}: any) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [rating, setRating] = useState<TransactionRating>(1);
+  const [selectedDate, setSelectedDate] = useState('');
+  const {user} = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      onValue(
+        ref(FIREBASE_DB, `users/${user.uid}/transactions/selected`),
+        querySnapShot => {
+          let data = querySnapShot.val() || {};
+          setSelectedDate(data);
+        },
+      );
+    }
+  }, [user]);
+
+  // update transaction
+  async function addTransaction(type: TransactionType) {
+    const id = uuid.v4();
+    update(
+      ref(
+        FIREBASE_DB,
+        `/users/${user?.uid}/transactions/history/${selectedDate}/items/${id}`,
+      ),
+      {
+        title,
+        id,
+        description,
+        rating,
+        type,
+      },
+    );
+  }
+
   return (
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.spacer} />
@@ -57,10 +97,20 @@ const TransactionAdd = ({navigation}: any) => {
             />
             <Text style={styles.inputField}>Happy about it?</Text>
             <View style={styles.feelContainer}>
-              <TouchableOpacity style={styles.moodSelection}>
+              <TouchableOpacity
+                style={[
+                  styles.ratingSelection,
+                  rating === TransactionRating.bad && styles.ratingActive,
+                ]}
+                onPress={() => setRating(TransactionRating.bad)}>
                 <FontAwesomeIcon size={20} icon={faThumbsDown} color="#fff" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.moodSelection}>
+              <TouchableOpacity
+                style={[
+                  styles.ratingSelection,
+                  rating === TransactionRating.good && styles.ratingActive,
+                ]}
+                onPress={() => setRating(TransactionRating.good)}>
                 <FontAwesomeIcon size={20} icon={faThumbsUp} color="#fff" />
               </TouchableOpacity>
             </View>
@@ -69,12 +119,24 @@ const TransactionAdd = ({navigation}: any) => {
         <View style={styles.actionContainer}>
           <TouchableOpacity
             style={styles.addTransactionExpense}
-            onPress={() => navigation.navigate(VIEWS.HOME)}>
+            onPress={() => {
+              addTransaction(TransactionType.expense)
+                .then(() =>
+                  Toast.show(`Successfully added ${title}`, Toast.SHORT),
+                )
+                .finally(() => navigation.navigate(VIEWS.HOME));
+            }}>
             <Text style={styles.actionText}>Expense</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.addTransactionIncome}
-            onPress={() => navigation.navigate(VIEWS.HOME)}>
+            onPress={() => {
+              addTransaction(TransactionType.income)
+                .then(() =>
+                  Toast.show(`Successfully added ${title}`, Toast.SHORT),
+                )
+                .finally(() => navigation.navigate(VIEWS.HOME));
+            }}>
             <Text style={styles.actionText}>Income</Text>
           </TouchableOpacity>
         </View>
@@ -152,7 +214,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     gap: 10,
   },
-  moodSelection: {
+  ratingSelection: {
     flex: 1,
     height: 50,
     alignItems: 'center',
@@ -160,6 +222,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 9,
     borderColor: '#6E6E6E',
+  },
+  ratingActive: {
+    backgroundColor: '#6E6E6E',
   },
   addTransactionExpense: {
     flex: 1,

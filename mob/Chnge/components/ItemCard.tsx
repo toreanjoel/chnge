@@ -1,16 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-
-const TRANSACTION_TYPE = {
-  income: 'income',
-  expense: 'expense',
-};
+import {TransactionType} from '../types/transactions';
 
 type Props = {
   pressCard?: () => void;
   title: string;
   content: string;
-  transactionType: string;
+  transactionType: TransactionType;
 };
 
 const ItemCard = ({pressCard, title, content, transactionType}: Props) => {
@@ -18,7 +14,7 @@ const ItemCard = ({pressCard, title, content, transactionType}: Props) => {
     <TouchableOpacity
       style={[
         styles.cardContainer,
-        transactionType === TRANSACTION_TYPE.income
+        transactionType === TransactionType.income
           ? styles.cardBorderIncome
           : styles.cardBorderExpense,
       ]}
@@ -28,11 +24,11 @@ const ItemCard = ({pressCard, title, content, transactionType}: Props) => {
         <Text
           style={[
             styles.tagContainer,
-            transactionType === TRANSACTION_TYPE.income
+            transactionType === TransactionType.income
               ? styles.tagIncome
               : styles.tagExpense,
           ]}>
-          Income
+          {transactionType === TransactionType.income ? 'Income' : 'Expense'}
         </Text>
         <Text numberOfLines={1} style={styles.title}>
           {title}
@@ -87,6 +83,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     display: 'flex',
     textAlign: 'center',
+    fontSize: 12,
     width: 70,
   },
   tagIncome: {

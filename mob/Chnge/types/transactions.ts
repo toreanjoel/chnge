@@ -1,17 +1,23 @@
-enum TransactionType {
-  income,
-  expense,
+export enum TransactionType {
+  income = 'income',
+  expense = 'expense',
+}
+
+export enum TransactionRating {
+  bad = 0,
+  good = 1,
 }
 
 export interface TransactionItem {
+  id: string;
   title: string;
   description: string;
   type: TransactionType;
-  score: number;
+  rating: TransactionRating;
 }
 
 export interface TransactionHistory {
-  items: TransactionItem[];
+  items: Record<string, TransactionItem>;
   overview: string;
   readonly: boolean;
 }

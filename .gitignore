@@ -46,3 +46,6 @@ npm-debug.log
 
 # other
 /mob/Chnge/config
+
+# configs
+google-services.json

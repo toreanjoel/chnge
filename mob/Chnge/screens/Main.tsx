@@ -1,13 +1,24 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from './Home';
 import Settings from './Settings';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCog, faGrip} from '@fortawesome/free-solid-svg-icons';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  PermissionsAndroid,
+} from 'react-native';
 import {VIEWS} from '../constants/views';
+import {ref, update} from 'firebase/database';
+import {useAuth} from '../hooks/useAuth';
+import {FIREBASE_DB} from '../config/firebase';
 
 const Tab = createBottomTabNavigator();
+let token: string; // this the token that will be held
 
 function HomeIcon({color, size}: any) {
   return <FontAwesomeIcon icon={faGrip} color={color} size={size} />;
@@ -63,7 +74,38 @@ function MyTabBar({state, descriptors, navigation}: any) {
   );
 }
 
+// request user permissions
+// TODO: we need to use callback to check permissions
+const requestUserPermission = async () => {
+  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+  token = (await messaging().getToken()).toString();
+  return token;
+};
+
+// we create a new token if needed
+const getNewFCMToken = async (user: any) => {
+  try {
+    const push_token = await requestUserPermission();
+    update(ref(FIREBASE_DB, `/users/${user?.uid}/metadata`), {
+      pushToken: push_token,
+    });
+  } catch (error) {
+    console.error('Error getting new FCM token:', error);
+    return false;
+  }
+};
+
 const Main = () => {
+  const {user} = useAuth();
+  // we setup listeners once mounted for messages
+  useEffect(() => {
+    if (user) {
+      getNewFCMToken(user);
+    }
+    // see the app.js to view the background task setup
+  }, [user]);
+
   return (
     <Tab.Navigator
       initialRouteName="Home"

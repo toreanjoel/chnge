@@ -1,24 +1,17 @@
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {faArrowLeft, faEdit} from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
+import {
+  faArrowLeft,
+  faEdit,
+  faThumbsUp,
+  faThumbsDown,
+} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {VIEWS} from '../constants/views';
-
-const TRANSACTION_TYPE = {
-  income: 'income',
-  expense: 'expense',
-};
+import {TransactionRating, TransactionType} from '../types/transactions';
 
 const TransactionDetails = ({navigation, route}: any) => {
-  const {title, description, type} = route.params;
-  console.log(title);
-  console.log(description);
-  console.log(type);
-  const [transactionData, setTransactionData] = useState({
-    title,
-    description,
-    type,
-  });
+  const {title, description, type, rating} = route.params;
 
   return (
     <View style={styles.container}>
@@ -33,7 +26,9 @@ const TransactionDetails = ({navigation, route}: any) => {
           <View style={styles.spacerActionWrapper} />
           <TouchableOpacity
             style={styles.editActionWrapper}
-            onPress={() => navigation.navigate(VIEWS.EDIT_TRANSACTION)}>
+            onPress={() =>
+              navigation.navigate(VIEWS.EDIT_TRANSACTION, route.params)
+            }>
             <FontAwesomeIcon size={20} icon={faEdit} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -42,7 +37,7 @@ const TransactionDetails = ({navigation, route}: any) => {
           style={[
             [
               styles.cardContainer,
-              type === TRANSACTION_TYPE.income
+              type === TransactionType.income
                 ? styles.cardBorderIncome
                 : styles.cardBorderExpense,
             ],
@@ -51,12 +46,16 @@ const TransactionDetails = ({navigation, route}: any) => {
             <Text numberOfLines={1} style={styles.title}>
               {title}
             </Text>
+            <FontAwesomeIcon
+              size={20}
+              icon={
+                rating === TransactionRating.good ? faThumbsUp : faThumbsDown
+              }
+              color="#fff"
+            />
           </View>
         </View>
         <Text style={styles.subText}>{description}</Text>
-      </View>
-      <View style={styles.moodContainer}>
-        <Text style={styles.moodText}>rating</Text>
       </View>
     </View>
   );
@@ -109,28 +108,22 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    paddingRight: 10,
   },
   title: {
     flex: 1,
     padding: 5,
     fontSize: 19,
     color: '#fff',
-    // fontWeight: '300',
   },
   subText: {
-    // fontWeight: '300',
     flex: 1,
     padding: 5,
     fontSize: 16,
     color: '#fff',
-  },
-  moodText: {
-    color: '#fff',
-  },
-  moodContainer: {
-    backgroundColor: '#212c35',
-    padding: 20,
-    marginBottom: 10,
   },
   contentContainer: {
     flex: 1,
