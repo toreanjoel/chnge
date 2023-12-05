@@ -27,6 +27,8 @@ RUN apt-get update -y && apt-get install -y build-essential git \
 # prepare build dir
 WORKDIR /app
 
+# TODO: Install Python and the Firebase SDK dependencies
+
 # install hex + rebar
 RUN mix local.hex --force && \
     mix local.rebar --force
