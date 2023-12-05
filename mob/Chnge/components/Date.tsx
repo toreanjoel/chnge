@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import moment from 'moment';
 
-const Date = ({date, onSelectDate, selected}: any) => {
+const Date = ({date, onSelectDate, selected, hasInsight}: any) => {
   const day = moment(date).format('dd').split('')[0];
   const dayNumber = moment(date).startOf('day').format('D');
   const fullDate = moment(date).format('YYYY-MM-DD');
@@ -11,6 +11,7 @@ const Date = ({date, onSelectDate, selected}: any) => {
     <TouchableOpacity
       onPress={() => onSelectDate(fullDate)}
       style={[styles.card, selected === fullDate && styles.selectedStyle]}>
+      {hasInsight && <View style={styles.indicator} />}
       <Text
         style={[styles.dayText, selected === fullDate && styles.selectedStyle]}>
         {day}
@@ -43,6 +44,16 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginRight: 10,
     paddingVertical: 8,
+    position: 'relative',
+  },
+  indicator: {
+    width: 6,
+    height: 6,
+    backgroundColor: '#de8133',
+    position: 'absolute',
+    top: 0,
+    right: 8,
+    borderRadius: 25,
   },
   dayText: {
     fontWeight: '300',

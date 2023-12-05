@@ -66,6 +66,7 @@ const HomeView = ({navigation}: RouterProps) => {
 
   // take a map and return the flatlist with just the data
   function transactionToList(data: TransactionHistory['items']) {
+    // here we can add the insight block
     return Object.keys(data).map(item => {
       return data[item];
     });
@@ -106,6 +107,8 @@ const HomeView = ({navigation}: RouterProps) => {
                     title={item.title}
                     content={item.description}
                     transactionType={item.type}
+                    // TODO: use the insight flag
+                    // insight={!!insight}
                     pressCard={() =>
                       navigation.navigate(VIEWS.VIEW_TRANSACTION, {
                         ...item,

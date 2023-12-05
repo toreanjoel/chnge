@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import moment from 'moment';
 import Date from './Date';
 
-const Calendar = ({onSelectDate, selected}: any) => {
+const Calendar = ({onSelectDate, selected, insight}: any) => {
   const [dates, setDates] = useState<any>([]);
   const [scrollPosition, setScrollPosition] = useState<any>(0);
   const [currentMonth, setCurrentMonth] = useState<any>();
@@ -49,6 +49,7 @@ const Calendar = ({onSelectDate, selected}: any) => {
               date={date}
               onSelectDate={onSelectDate}
               selected={selected}
+              hasInsight={!!insight}
             />
           ))}
         </ScrollView>
