@@ -1,15 +1,24 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {TransactionType} from '../types/transactions';
+import {faTrash} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 type Props = {
   pressCard?: () => void;
+  deleteCard?: () => void;
   title: string;
   content: string;
   transactionType: TransactionType;
 };
 
-const ItemCard = ({pressCard, title, content, transactionType}: Props) => {
+const ItemCard = ({
+  pressCard,
+  deleteCard,
+  title,
+  content,
+  transactionType,
+}: Props) => {
   return (
     <TouchableOpacity
       style={[
@@ -21,15 +30,23 @@ const ItemCard = ({pressCard, title, content, transactionType}: Props) => {
       onPress={pressCard}>
       <View style={styles.bar} />
       <View style={styles.content}>
-        <Text
-          style={[
-            styles.tagContainer,
-            transactionType === TransactionType.income
-              ? styles.tagIncome
-              : styles.tagExpense,
-          ]}>
-          {transactionType === TransactionType.income ? 'Income' : 'Expense'}
-        </Text>
+        <View style={styles.cardActionsWrapper}>
+          <Text
+            style={[
+              styles.tagContainer,
+              transactionType === TransactionType.income
+                ? styles.tagIncome
+                : styles.tagExpense,
+            ]}>
+            {transactionType === TransactionType.income ? 'Income' : 'Expense'}
+          </Text>
+          <View style={styles.cardActionsWrapperSpacer} />
+          <TouchableOpacity
+            style={styles.cardDeleteAction}
+            onPress={deleteCard}>
+            <FontAwesomeIcon size={15} icon={faTrash} color="#fff" />
+          </TouchableOpacity>
+        </View>
         <Text numberOfLines={1} style={styles.title}>
           {title}
         </Text>
@@ -51,6 +68,17 @@ const styles = StyleSheet.create({
     padding: 12,
     borderLeftWidth: 5,
     marginBottom: 5,
+  },
+  cardActionsWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardActionsWrapperSpacer: {
+    flex: 1,
+  },
+  cardDeleteAction: {
+    marginHorizontal: 10,
   },
   cardBorderIncome: {
     borderColor: '#00D585',

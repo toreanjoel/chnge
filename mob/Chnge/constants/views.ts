@@ -9,6 +9,7 @@ const VIEWS = {
   ADD_TRANSACTION: 'add-transaction',
   EDIT_TRANSACTION: 'edit-transaction',
   VIEW_TRANSACTION: 'view-transaction',
+  VIEW_INSIGHT: 'view-insight',
 };
 
 export {VIEWS};

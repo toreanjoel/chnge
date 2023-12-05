@@ -15,6 +15,7 @@ import TransactionDetails from './TransactionDetails';
 import TransactionEdit from './TransactionEdit';
 import TransactionAdd from './TransactionAdd';
 import moment from 'moment';
+import InsightDetails from './InsightDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +59,10 @@ const Auth = () => {
           {isAuthenticated ? (
             <>
               <Stack.Screen name={VIEWS.MAIN} component={Main} />
+              <Stack.Screen
+                name={VIEWS.VIEW_INSIGHT}
+                component={InsightDetails}
+              />
               <Stack.Screen
                 name={VIEWS.VIEW_TRANSACTION}
                 component={TransactionDetails}

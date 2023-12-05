@@ -1,15 +1,17 @@
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useState, useEffect} from 'react';
+import {faBell} from '@fortawesome/free-solid-svg-icons';
 import {useAuth} from '../hooks/useAuth';
 import {NavigationProp} from '@react-navigation/native';
 import {VIEWS} from '../constants/views';
 import Calendar from '../components/Calendar';
-import {TransactionHistory, TransactionItem} from '../types/transactions';
+import {TransactionHistory} from '../types/transactions';
 import ItemCard from '../components/ItemCard';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {onValue, ref, update} from 'firebase/database';
+import {onValue, ref, update, remove} from 'firebase/database';
 import {FIREBASE_DB} from '../config/firebase';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -20,7 +22,8 @@ const Stack = createNativeStackNavigator();
 const HomeView = ({navigation}: RouterProps) => {
   const {user} = useAuth();
   const [transactions, setTransactions] = useState<TransactionHistory>();
-  const [selectedDate, setSelectedDate] = useState();
+  const [insight, setInsight] = useState<string | undefined>();
+  const [selectedDate, setSelectedDate] = useState<string | undefined>();
 
   // set the current initial date
   useEffect(() => {
@@ -45,6 +48,7 @@ const HomeView = ({navigation}: RouterProps) => {
         ),
         querySnapShot => {
           let data = querySnapShot.val() || {};
+          setInsight(data.insight);
           setTransactions(data);
         },
       );
@@ -61,22 +65,50 @@ const HomeView = ({navigation}: RouterProps) => {
       return false;
     }
     const {items} = transactions;
-    return items ? Object.keys(transactions.items).length !== 0 : 0;
+    return items ? Object.keys(items).length !== 0 : 0;
   }
 
   // take a map and return the flatlist with just the data
   function transactionToList(data: TransactionHistory['items']) {
-    // here we can add the insight block
     return Object.keys(data).map(item => {
       return data[item];
     });
+  }
+
+  // remove the current item
+  async function removeTransaction(
+    transactionId: string,
+    date: string | undefined,
+  ) {
+    remove(
+      ref(
+        FIREBASE_DB,
+        `/users/${user.uid}/transactions/history/${date}/items/${transactionId}`,
+      ),
+    );
   }
 
   return (
     <GestureHandlerRootView style={styles.mainContainer}>
       <View style={styles.calendarContainer}>
         <View style={styles.spacer} />
-        <View style={styles.spacer} />
+        <View style={styles.insightWrapper}>
+          <View style={styles.insightSpacer} />
+          {insight ? (
+            <TouchableOpacity
+              style={styles.insight}
+              onPress={() => {
+                navigation.navigate(VIEWS.VIEW_INSIGHT, {
+                  details: insight,
+                  selectedDate,
+                });
+              }}>
+              <FontAwesomeIcon size={20} icon={faBell} color="#fff" />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.insight} />
+          )}
+        </View>
         <Calendar
           onSelectDate={(value: any) => {
             update(ref(FIREBASE_DB, `/users/${user.uid}/transactions`), {
@@ -109,6 +141,7 @@ const HomeView = ({navigation}: RouterProps) => {
                     transactionType={item.type}
                     // TODO: use the insight flag
                     // insight={!!insight}
+                    deleteCard={() => removeTransaction(item.id, selectedDate)}
                     pressCard={() =>
                       navigation.navigate(VIEWS.VIEW_TRANSACTION, {
                         ...item,
@@ -152,6 +185,16 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   contentListContainer: {},
+  insightWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  insightSpacer: {
+    flex: 1,
+  },
+  insight: {
+    height: 20,
+  },
   contentEmptyContainer: {
     display: 'flex',
     alignItems: 'center',

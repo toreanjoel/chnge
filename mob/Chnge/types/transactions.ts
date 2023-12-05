@@ -18,7 +18,7 @@ export interface TransactionItem {
 
 export interface TransactionHistory {
   items: Record<string, TransactionItem>;
-  overview: string;
+  insight: string;
   readonly: boolean;
 }
 
