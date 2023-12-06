@@ -72,6 +72,11 @@ FROM ${RUNNER_IMAGE}
 RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
+# Install Python 3.9
+RUN apt-get update -y && apt-get install -y python3.9 python3-pip
+# Install the firebase dependencies
+RUN pip install firebase_admin
+
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 

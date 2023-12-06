@@ -16,7 +16,10 @@ defmodule ChngeApi.Application do
       # Start a worker by calling: ChngeApi.Worker.start_link(arg)
       # {ChngeApi.Worker, arg},
       # Start to serve requests, typically the last entry
-      ChngeApiWeb.Endpoint
+      ChngeApiWeb.Endpoint,
+
+      # TODO: Process that checks user processes are up
+      {ChngeApi.Servers.UserJobServer, %{}}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
