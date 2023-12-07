@@ -20,6 +20,17 @@ defmodule ChngeApi.Core.Python do
   end
 
   @doc """
+    Execute a script by passing the script name along with list of args
+  """
+  def execute_file_with_params(file, params) do
+    {result, _} = System.cmd(@python3, [@main_py_path <> "/#{file}.py" | params])
+    case result do
+      "" -> {:error, "There was a problem executing the file"}
+      _ -> {:ok, result |> String.trim()}
+    end
+  end
+
+  @doc """
     Return the list of all the scripts available
   """
   def list_scripts do

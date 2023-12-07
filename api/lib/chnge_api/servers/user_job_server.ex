@@ -43,8 +43,6 @@ defmodule ChngeApi.Servers.UserJobServer do
         data = Jason.decode!(result)
         users = data |> Map.keys()
 
-        # TODO: only fetch the IDS
-        # TODO: separate functions for user data that we leave to the process
         Enum.each(users, fn user_id ->
           spawn(fn -> start_user_notification_server(user_id) end)
         end)
@@ -55,8 +53,15 @@ defmodule ChngeApi.Servers.UserJobServer do
   defp start_user_notification_server(id) do
     case GenServer.whereis(String.to_atom("user_notification_process:#{id}")) do
       nil ->
+        # we need to get the auth token to send from the server
+        {_, token} = ChngeApi.Core.Python.execute_file("firebase_gen_auth_token")
+
+        process_payload = %{
+          id: id,
+          server_token: token
+        }
         # If the process does not exist, start it
-        ChngeApi.Servers.UserNotificationServer.start_link(id)
+        ChngeApi.Servers.UserNotificationServer.start_link(process_payload)
       _pid ->
         # If the process already exists, do nothing
         :ok
