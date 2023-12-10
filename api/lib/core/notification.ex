@@ -1,4 +1,4 @@
-defmodule Core.Notification do
+defmodule ChngeApi.Core.Notification do
   @moduledoc """
     The module that manages the sending of push notifications
   """

@@ -1,4 +1,4 @@
-defmodule ChngeApi.Servers.UserJobServer do
+defmodule ChngeApi.Servers.UserServer do
   @doc """
     This is started and makes a request to get all the users and startup a process per user.
     Each user will have a job that will take meta data and run to schedule overview and notifications.
@@ -47,21 +47,39 @@ defmodule ChngeApi.Servers.UserJobServer do
         users = data |> Map.keys()
 
         Enum.each(users, fn user_id ->
-          spawn(fn -> start_user_notification_server(user_id) end)
+          user_data = Map.get(data, user_id)
+          last_online = if !is_nil(user_data), do: Kernel.get_in(user_data, ["metadata", "lastOnline"])
+          spawn(fn -> start_user_notification_server(user_id, last_online) end)
         end)
       _ -> Logger.info("There was no data")
     end
   end
 
   # we check if the process for a user exists
-  defp start_user_notification_server(id) do
-    case GenServer.whereis(String.to_atom("user_notification_process:#{id}")) do
-      nil ->
-        # start non exisiting user processes - new users added, other ignored or restarted
-        ChngeApi.Servers.UserNotificationServer.start_link(%{ id: id})
-      _pid ->
-        # If the process already exists, do nothing
-        :ok
+  defp start_user_notification_server(id, last_online) do
+
+    if (!is_diff_more_than_5_days(last_online)) do
+      case GenServer.whereis(String.to_atom("notification_process:#{id}")) do
+        nil ->
+          # start non exisiting user processes - new users added, other ignored or restarted
+          ChngeApi.Servers.NotificationServer.start_link(%{ id: id})
+        _pid ->
+          # If the process already exists, do nothing
+          :ok
+      end
+    else
+      :inactive
     end
+  end
+
+  # the timestamp is more than 5 days of inactivity
+  defp is_diff_more_than_5_days(last_online) do
+    current_time = DateTime.utc_now() |> DateTime.to_unix(:millisecond)
+    # Calculate the absolute difference in milliseconds
+    diff = current_time - last_online
+    # Convert milliseconds to days
+    diff_in_days = diff / (24 * 60 * 60 * 1000)
+    # # Check if the difference is more than 5 days
+    diff_in_days > 5
   end
 end

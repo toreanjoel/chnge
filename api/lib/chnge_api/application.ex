@@ -20,7 +20,7 @@ defmodule ChngeApi.Application do
 
       # TODO: Process that checks user processes are up
       {ChngeApi.Servers.AccessTokenServer, %{}},
-      {ChngeApi.Servers.UserJobServer, %{}}
+      {ChngeApi.Servers.UserServer, %{}}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
