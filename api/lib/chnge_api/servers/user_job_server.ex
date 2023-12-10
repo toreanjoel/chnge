@@ -8,6 +8,9 @@ defmodule ChngeApi.Servers.UserJobServer do
   use GenServer
   require Logger
 
+  # function scripts
+  @firebase_user_details "firebase_user_data"
+
   # Override the `start_link` function as before
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
@@ -36,7 +39,7 @@ defmodule ChngeApi.Servers.UserJobServer do
   # make a request here to get the user data and start a process per user
   defp user_process_init() do
     # Retrieve user data, for example, a list of user IDs
-    {status, result} = ChngeApi.Core.Python.execute_file("firebase_user_data")
+    {status, result} = ChngeApi.Core.Python.execute_file(@firebase_user_details)
     case status do
       :ok ->
         # here we process the data for having
@@ -50,18 +53,12 @@ defmodule ChngeApi.Servers.UserJobServer do
     end
   end
 
+  # we check if the process for a user exists
   defp start_user_notification_server(id) do
     case GenServer.whereis(String.to_atom("user_notification_process:#{id}")) do
       nil ->
-        # we need to get the auth token to send from the server
-        {_, token} = ChngeApi.Core.Python.execute_file("firebase_gen_auth_token")
-
-        process_payload = %{
-          id: id,
-          server_token: token
-        }
-        # If the process does not exist, start it
-        ChngeApi.Servers.UserNotificationServer.start_link(process_payload)
+        # start non exisiting user processes - new users added, other ignored or restarted
+        ChngeApi.Servers.UserNotificationServer.start_link(%{ id: id})
       _pid ->
         # If the process already exists, do nothing
         :ok

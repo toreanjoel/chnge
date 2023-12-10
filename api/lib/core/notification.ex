@@ -27,6 +27,7 @@ require Logger
         {:ok, "Successfully sent notification"}
       _ ->
         Logger.error("There was an error sending push notification")
+        Logger.error(resp)
         {:error, "There was an issue sending notification"}
     end
   end

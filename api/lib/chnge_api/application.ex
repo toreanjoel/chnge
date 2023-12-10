@@ -19,6 +19,7 @@ defmodule ChngeApi.Application do
       ChngeApiWeb.Endpoint,
 
       # TODO: Process that checks user processes are up
+      {ChngeApi.Servers.AccessTokenServer, %{}},
       {ChngeApi.Servers.UserJobServer, %{}}
     ]
 
