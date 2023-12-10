@@ -56,15 +56,15 @@ defmodule ChngeApi.Servers.UserNotificationServer do
         # here we need to get the new generated token to send notificaitons through REST
         resp = GenServer.call(ChngeApi.Servers.AccessTokenServer, :get_token)
 
-        if !is_nil( server_token = Map.get(resp, :token)) do
+        if !is_nil(server_token = Map.get(resp, :token)) do
           # send push notification
           #TODO: Look for sending extra data with regards to link for client to open views
           Core.Notification.send(%{ title: "Title", body: "Body Message"}, push_token, server_token)
         else
-          Logger.log("The token does not exist, make sure process is up or token exists")
+          Logger.info("The token does not exist, make sure process is up or token exists")
         end
       _ ->
-        Logger.log("There was no data")
+        Logger.info("There was no data")
     end
   end
 end

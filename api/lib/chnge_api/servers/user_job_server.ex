@@ -49,7 +49,7 @@ defmodule ChngeApi.Servers.UserJobServer do
         Enum.each(users, fn user_id ->
           spawn(fn -> start_user_notification_server(user_id) end)
         end)
-      _ -> Logger.log("There was no data")
+      _ -> Logger.info("There was no data")
     end
   end
 

@@ -5,7 +5,7 @@ defmodule ChngeApi.Core.Python do
   """
 
   # the path to the python scripts
-  @main_py_path File.cwd! <> "/lib/scripts"
+  @main_py_path File.cwd! <> if System.get_env("MIX_ENV") === "prod", do: "/bin/lib/scripts", else: "/lib/scripts"
   @python3 "python3" # python cmd function - might need fiddling as its per env
 
   @doc """

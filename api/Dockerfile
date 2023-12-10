@@ -51,6 +51,8 @@ COPY priv priv
 
 COPY lib lib
 
+COPY lib/scripts scripts
+
 COPY assets assets
 
 # compile assets
@@ -93,6 +95,9 @@ ENV MIX_ENV="prod"
 # Only copy the final release from the build stage
 #TODO: Look at the project name for the builder
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/chnge_api ./
+
+# Copy the scripts directory from the builder stage to the runner stage
+COPY --from=builder /app/scripts /app/bin/lib/scripts
 
 USER nobody
 
