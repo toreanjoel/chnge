@@ -21,6 +21,7 @@ import {TransactionRating, TransactionType} from '../types/transactions';
 import {useAuth} from '../hooks/useAuth';
 import {FIREBASE_DB} from '../config/firebase';
 import {onValue, ref, update} from 'firebase/database';
+import moment from 'moment';
 
 const TransactionAdd = ({navigation}: any) => {
   const [title, setTitle] = useState('');
@@ -55,6 +56,7 @@ const TransactionAdd = ({navigation}: any) => {
         description,
         rating,
         type,
+        createdAt: moment().format(),
       },
     );
   }

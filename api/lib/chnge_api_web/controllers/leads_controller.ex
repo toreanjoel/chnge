@@ -39,15 +39,15 @@ defmodule ChngeApiWeb.LeadsController do
           }
 
           # here we make a request to store to firebase
-          {status, firebase_resp} = post_lead(payload)
+          {status, resp} = post_lead(payload)
 
           case status do
             :ok ->
               # response back to the client
-              return(conn, 200, %{ "message" => firebase_resp, "data" => %{} })
+              return(conn, 200, %{ "message" => resp, "data" => %{} })
             _ ->
               # response back to the client
-              return(conn, 400, %{ "message" => firebase_resp," data" => %{} })
+              return(conn, 400, %{ "message" => resp," data" => %{} })
           end
         else
           # response back to the client

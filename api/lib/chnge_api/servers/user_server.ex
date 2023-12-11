@@ -9,7 +9,7 @@ defmodule ChngeApi.Servers.UserServer do
   require Logger
 
   # function scripts
-  @firebase_user_details "firebase_user_data"
+  @get_users "get_users"
 
   # Override the `start_link` function as before
   def start_link(args) do
@@ -41,7 +41,7 @@ defmodule ChngeApi.Servers.UserServer do
   # make a request here to get the user data and start a process per user
   defp user_process_init() do
     # Retrieve user data, for example, a list of user IDs
-    {status, result} = ChngeApi.Core.Python.execute_file(@firebase_user_details)
+    {status, result} = ChngeApi.Core.Python.execute_file(@get_users)
     case status do
       :ok ->
         # here we process the data for having

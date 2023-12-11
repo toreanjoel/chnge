@@ -6,7 +6,7 @@ defmodule ChngeApi.Servers.AccessTokenServer do
   require Logger
 
   # function scripts
-  @firebase_auth_token "firebase_gen_auth_token"
+  @get_auth_token "get_auth_token"
 
   # Override the `start_link` function as before
   def start_link(args = %{}) do
@@ -56,6 +56,6 @@ defmodule ChngeApi.Servers.AccessTokenServer do
   # We generate the token here from teh service accout
   #TODO: this will expire, either reuse or keep making a new instance on call
   defp generate_token() do
-    ChngeApi.Core.Python.execute_file(@firebase_auth_token)
+    ChngeApi.Core.Python.execute_file(@get_auth_token)
   end
 end

@@ -4,10 +4,18 @@ defmodule ChngeApi.Core.Gpt.Prompt do
   """
 
   @doc """
-    The prompt function that we can call to get teh prompt
+    The prompt around getting insight for the current day generated and optional context added
   """
-  def query(input) do
+  def insight(input) do
     "Tell me a random joke  add emojis if you need to"
+  end
+
+  @doc """
+    A suggestion that is generated for the prev days insight
+  """
+  def daily_suggestion(input) do
+    # TODO
+    "WIP"
   end
 end
 

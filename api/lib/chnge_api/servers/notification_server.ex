@@ -2,7 +2,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   use GenServer
   require Logger
 
-  @firebase_user_by_id "firebase_user_data_by_id"
+  @get_user_by_id "get_user_data_by_id"
 
   # Starts the server with base argument data
   def start_link(payload) do
@@ -78,7 +78,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   defp push_notification(%{id: user_id} = data, type) do
     # Fetch user data by id
     {status, result} =
-      ChngeApi.Core.Python.execute_file_with_params(@firebase_user_by_id, [user_id])
+      ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [user_id])
 
     case status do
       :ok ->
@@ -160,7 +160,7 @@ defmodule ChngeApi.Servers.NotificationServer do
 
     # Fetch user data by id
     {status, result} =
-      ChngeApi.Core.Python.execute_file_with_params(@firebase_user_by_id, [state.id])
+      ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [state.id])
 
     Logger.info("fn schedule_messages: Fetch user data. User status: #{status}")
 
