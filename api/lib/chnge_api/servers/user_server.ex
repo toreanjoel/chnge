@@ -52,7 +52,7 @@ defmodule ChngeApi.Servers.UserServer do
           user_data = Map.get(data, user_id)
           last_online = if !is_nil(user_data), do: Kernel.get_in(user_data, ["metadata", "lastOnline"])
           Logger.info("fn user_process_init: Create user process data")
-          spawn(fn -> start_user_notification_server(user_id, last_online) end)
+          start_user_notification_server(user_id, last_online)
         end)
       _ -> Logger.info("There was no data")
     end

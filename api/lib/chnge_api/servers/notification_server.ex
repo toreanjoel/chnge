@@ -169,60 +169,53 @@ defmodule ChngeApi.Servers.NotificationServer do
         Logger.info("fn schedule_messages: Success Fetch User Data. Schedule Notifications")
         data = Jason.decode!(result)
         timezone = Kernel.get_in(data, ["profile", "timezone"])
+        curr_time = DateTime.utc_now() |> DateTime.to_unix()
 
         Logger.info("fn schedule_messages: Timezone: #{timezone}")
 
         # Schedule 1 PM message
         next_seven_am =
           ChngeApi.Core.TimeScheduler.next_seven_am_unix(
-            DateTime.utc_now() |> DateTime.to_unix(),
+            curr_time,
             timezone
           )
 
-        Logger.info(
-          "Scheduled next 7am, adding: #{next_seven_am - :os.system_time(:second)} seconds"
-        )
+        Logger.info("Scheduled next 7am, adding: #{next_seven_am - curr_time} seconds")
 
-        Process.send_after(self(), :seven_am, next_seven_am - :os.system_time(:second))
+        Process.send_after(self(), :seven_am, (next_seven_am - curr_time) * 1000)
 
         # Schedule 1 PM message
         next_one_pm =
           ChngeApi.Core.TimeScheduler.next_one_pm_unix(
-            DateTime.utc_now() |> DateTime.to_unix(),
+            curr_time,
             timezone
           )
 
-        Logger.info(
-          "Scheduled next 1pm, adding: #{next_one_pm - :os.system_time(:second)} seconds"
-        )
+        Logger.info("Scheduled next 1pm, adding: #{next_one_pm - curr_time} seconds")
 
-        Process.send_after(self(), :one_pm, next_one_pm - :os.system_time(:second))
+        Process.send_after(self(), :one_pm, (next_one_pm - curr_time) * 1000)
 
         # Schedule 6 PM message
         next_six_pm =
           ChngeApi.Core.TimeScheduler.next_six_pm_unix(
-            DateTime.utc_now() |> DateTime.to_unix(),
+            curr_time,
             timezone
           )
 
-        Logger.info(
-          "Scheduled next 6pm, adding: #{next_six_pm - :os.system_time(:second)} seconds"
-        )
+        Logger.info("Scheduled next 6pm, adding: #{next_six_pm - curr_time} seconds")
 
-        Process.send_after(self(), :six_pm, next_six_pm - :os.system_time(:second))
+        Process.send_after(self(), :six_pm, (next_six_pm - curr_time) * 1000)
 
         # Schedule midnight message
         next_midnight =
           ChngeApi.Core.TimeScheduler.next_midnight_unix(
-            DateTime.utc_now() |> DateTime.to_unix(),
+            curr_time,
             timezone
           )
 
-        Logger.info(
-          "Scheduled midnight, adding: #{next_midnight - :os.system_time(:second)} seconds"
-        )
+        Logger.info("Scheduled midnight, adding: #{next_midnight - curr_time} seconds")
 
-        Process.send_after(self(), :midnight, next_midnight - :os.system_time(:second))
+        Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
 
       _ ->
         Logger.info("There was an issue scheduling the process: #{state.id}")
