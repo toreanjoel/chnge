@@ -18,10 +18,10 @@ defmodule ChngeApi.Servers.AccessTokenServer do
     # init fetch token and set state
     {status, token} = generate_token()
 
-    # start the process to generate a new token evert 1h
+    # start the process to generate a new token evert 30m
     # TODO: This might not be needed - better to refresh when needed
     # refresh every hour
-    :timer.send_interval(3_600_000, :refresh_token)
+    :timer.send_interval(1_800_000, :refresh_token)
 
     token = case status do
       :ok -> token

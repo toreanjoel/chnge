@@ -65,7 +65,7 @@ defmodule ChngeApi.Servers.UserServer do
         nil ->
           Logger.info("fn start_user_notification_server: start user process. User: #{id}")
           # start non exisiting user processes - new users added, other ignored or restarted
-          ChngeApi.Servers.NotificationServer.start_link(%{ id: id})
+          ChngeApi.Servers.NotificationServer.start_link(%{id: id})
         _pid ->
           # If the process already exists, do nothing
           :ok

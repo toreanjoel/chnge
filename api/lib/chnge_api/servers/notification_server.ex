@@ -2,7 +2,8 @@ defmodule ChngeApi.Servers.NotificationServer do
   use GenServer
   require Logger
 
-  @get_user_by_id "get_user_data_by_id"
+  @get_user_by_id "get_user_by_id"
+  @set_insight "set_insight"
 
   # Starts the server with base argument data
   def start_link(payload) do
@@ -66,8 +67,8 @@ defmodule ChngeApi.Servers.NotificationServer do
     Logger.info("fn handle_info: :midnight listener")
     new_state = Map.put(state, :midnight_sent, true)
 
-    # send the push notification
-    push_notification(state, :midnight)
+    # process the insight
+    process_insight(new_state)
 
     # check if we should stop the process
     check_and_stop(new_state)
@@ -77,8 +78,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   # Schedule and process the notifications
   defp push_notification(%{id: user_id} = data, type) do
     # Fetch user data by id
-    {status, result} =
-      ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [user_id])
+    {status, result} = ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [user_id])
 
     case status do
       :ok ->
@@ -159,8 +159,7 @@ defmodule ChngeApi.Servers.NotificationServer do
     Logger.info("fn schedule_messages")
 
     # Fetch user data by id
-    {status, result} =
-      ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [state.id])
+    {status, result} = ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [state.id])
 
     Logger.info("fn schedule_messages: Fetch user data. User status: #{status}")
 
@@ -181,7 +180,6 @@ defmodule ChngeApi.Servers.NotificationServer do
           )
 
         Logger.info("Scheduled next 7am, adding: #{next_seven_am - curr_time} seconds")
-
         Process.send_after(self(), :seven_am, (next_seven_am - curr_time) * 1000)
 
         # Schedule 1 PM message
@@ -192,7 +190,6 @@ defmodule ChngeApi.Servers.NotificationServer do
           )
 
         Logger.info("Scheduled next 1pm, adding: #{next_one_pm - curr_time} seconds")
-
         Process.send_after(self(), :one_pm, (next_one_pm - curr_time) * 1000)
 
         # Schedule 6 PM message
@@ -203,7 +200,6 @@ defmodule ChngeApi.Servers.NotificationServer do
           )
 
         Logger.info("Scheduled next 6pm, adding: #{next_six_pm - curr_time} seconds")
-
         Process.send_after(self(), :six_pm, (next_six_pm - curr_time) * 1000)
 
         # Schedule midnight message
@@ -214,8 +210,8 @@ defmodule ChngeApi.Servers.NotificationServer do
           )
 
         Logger.info("Scheduled midnight, adding: #{next_midnight - curr_time} seconds")
-
-        Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
+        # Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
+        Process.send_after(self(), :midnight, 6000)
 
       _ ->
         Logger.info("There was an issue scheduling the process: #{state.id}")
@@ -232,9 +228,78 @@ defmodule ChngeApi.Servers.NotificationServer do
     end
   end
 
-  defp process_overview(state) do
+  # process the history data
+  defp process_insight(state) do
     # Create the script to update the overview - use prev days context
     # Send Notification to have the user view (extra data for client to open view)
-    #
+    {status, result} = ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [state.id])
+
+    case status do
+      :ok ->
+        data = Jason.decode!(result)
+        history = Kernel.get_in(data, ["transactions", "history"])
+        current_date = Kernel.get_in(data, ["transactions", "current"])
+        current_days_data = Map.get(history, current_date, %{})
+        history_data = if is_nil(history), do: %{}, else: history
+
+        insight_list = create_insight_list(history_data, current_date)
+
+        {ai_status, resp} =
+          ChngeApi.Core.Gpt.insight(Jason.encode!(current_days_data), Jason.encode!(insight_list))
+
+        case ai_status do
+          :ok ->
+            {_, new_date} = Date.from_iso8601(current_date)
+
+            ChngeApi.Core.Python.execute_file_with_params(@set_insight, [
+              state.id,
+              current_date,
+              Date.to_string(Date.add(new_date, 1)),
+              resp
+            ])
+
+            # sending push after we generated from AI
+            push_notification(state, :midnight)
+
+            {:ok, "Successfully got overview data updated"}
+
+          _ ->
+            {:error, resp}
+        end
+
+      _ ->
+        Logger.info("There was an issue getting the details for user: #{state.id}")
+        {:error, "No data found for user"}
+    end
+  end
+
+  # create a list of insight data that will be used as context data
+  defp create_insight_list(response_data, current_date) do
+    # Parse the current date
+    {:ok, current_date} = Date.from_iso8601(current_date)
+
+    # Filter and map the response data
+    Enum.reduce(response_data, [], fn {date_string, data}, acc ->
+      # Parse the date string
+      {:ok, date} = Date.from_iso8601(date_string)
+
+      # Check if the date is within the last 7 days but not the current date
+      # TODO: 7 days can be changed when we add payments
+      if Date.diff(current_date, date) <= 7 and Date.diff(current_date, date) > 0 do
+        # Extract the insight
+        insight = Map.get(data, "insight", "")
+
+        # Append to the accumulator if insight is present
+        if insight != "" do
+          [%{date: date_string, insight: insight} | acc]
+        else
+          acc
+        end
+      else
+        acc
+      end
+    end)
+    # Reverse to maintain chronological order
+    |> Enum.reverse()
   end
 end

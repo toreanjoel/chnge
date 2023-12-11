@@ -51,8 +51,7 @@ defmodule ChngeApi.MixProject do
       {:httpoison, "~> 2.0"},
       {:uuid, "~> 1.1"},
       {:cors_plug, "~> 3.0"},
-      {:timex, "~> 3.0"},
-      {:tzdata, "~> 1.1"}
+      {:timex, "~> 3.0"}
     ]
   end
 
