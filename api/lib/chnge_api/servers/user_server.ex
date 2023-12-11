@@ -18,6 +18,7 @@ defmodule ChngeApi.Servers.UserServer do
 
   # Initialize the state of the server
   def init(state) do
+    Logger.info("fn init: Init user server")
     # link spawn the processes of teh notification server
 
     # Schedule a message to be sent every 15 minutes (900000 milliseconds)
@@ -29,6 +30,7 @@ defmodule ChngeApi.Servers.UserServer do
   end
 
   def handle_info(:init_user_processes, state) do
+    Logger.info("fn handle_info: Check user processes")
     # This function is called every 15 minutes
     # Place your recurring task logic here
     spawn_link(fn  -> user_process_init()  end)
@@ -49,6 +51,7 @@ defmodule ChngeApi.Servers.UserServer do
         Enum.each(users, fn user_id ->
           user_data = Map.get(data, user_id)
           last_online = if !is_nil(user_data), do: Kernel.get_in(user_data, ["metadata", "lastOnline"])
+          Logger.info("fn user_process_init: Create user process data")
           spawn(fn -> start_user_notification_server(user_id, last_online) end)
         end)
       _ -> Logger.info("There was no data")
@@ -57,10 +60,10 @@ defmodule ChngeApi.Servers.UserServer do
 
   # we check if the process for a user exists
   defp start_user_notification_server(id, last_online) do
-
     if (!is_diff_more_than_5_days(last_online)) do
       case GenServer.whereis(String.to_atom("notification_process:#{id}")) do
         nil ->
+          Logger.info("fn start_user_notification_server: start user process. User: #{id}")
           # start non exisiting user processes - new users added, other ignored or restarted
           ChngeApi.Servers.NotificationServer.start_link(%{ id: id})
         _pid ->

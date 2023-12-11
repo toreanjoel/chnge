@@ -15,20 +15,19 @@ defmodule ChngeApi.Servers.NotificationServer do
   # Initialize the state of the server
   def init(state) do
     # Initialize flags for 6 PM and midnight notifications
-    new_state = %{
-      seven_am_sent: false,
-      one_pm_sent: false,
-      six_pm_sent: false,
-      midnight_sent: false
-    }
+    state = Map.put(state, :seven_am_sent, false)
+    new_state = Map.put(state, :one_pm_sent, false)
+    new_state = Map.put(new_state, :six_pm_sent, false)
+    new_state = Map.put(new_state, :midnight_sent, false)
 
-    # Schedule 6 PM and midnight messages
+    # we dont spawn a new proess as we will need to send to the genserver to listen
     schedule_messages(new_state)
 
     {:ok, new_state}
   end
 
   def handle_info(:seven_am, state) do
+    Logger.info("fn handle_info: :seven_am listener")
     new_state = Map.put(state, :seven_am_sent, true)
 
     # send push notification
@@ -40,6 +39,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   end
 
   def handle_info(:one_pm, state) do
+    Logger.info("fn handle_info: :one_pm listener")
     new_state = Map.put(state, :one_pm_sent, true)
 
     # send push notification
@@ -51,6 +51,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   end
 
   def handle_info(:six_pm, state) do
+    Logger.info("fn handle_info: :six_pm listener")
     new_state = Map.put(state, :six_pm_sent, true)
 
     # send push notification
@@ -62,6 +63,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   end
 
   def handle_info(:midnight, state) do
+    Logger.info("fn handle_info: :midnight listener")
     new_state = Map.put(state, :midnight_sent, true)
 
     # send the push notification
@@ -90,10 +92,12 @@ defmodule ChngeApi.Servers.NotificationServer do
           case type do
             :seven_am ->
               Logger.info("Send push notification 7am: #{user_id}")
+
               ChngeApi.Core.Notification.send(
                 %{
                   title: "🌞 Good Morning! Ready for a Fresh Start?",
-                  body: "Check out yesterday's insights and set your goals for today. Tap here to start your day on a bright note! 📈"
+                  body:
+                    "Check out yesterday's insights and set your goals for today. Tap here to start your day on a bright note! 📈"
                 },
                 push_token,
                 server_token
@@ -101,10 +105,12 @@ defmodule ChngeApi.Servers.NotificationServer do
 
             :one_pm ->
               Logger.info("Send push notification 1pm: #{user_id}")
+
               ChngeApi.Core.Notification.send(
                 %{
                   title: "🕐 Midday Check-in! How's Your Day Going?",
-                  body: "Halfway through the day! Remember to log any plans or transactions. Keep your day on track! 📝"
+                  body:
+                    "Halfway through the day! Remember to log any plans or transactions. Keep your day on track! 📝"
                 },
                 push_token,
                 server_token
@@ -112,10 +118,12 @@ defmodule ChngeApi.Servers.NotificationServer do
 
             :six_pm ->
               Logger.info("Send push notification 6pm: #{user_id}")
+
               ChngeApi.Core.Notification.send(
                 %{
                   title: "🌆 Evening Reminder: Log Today's Transactions",
-                  body: "Let's wrap up the day! Don't forget to add today's transactions. A few taps and you're done! ✅"
+                  body:
+                    "Let's wrap up the day! Don't forget to add today's transactions. A few taps and you're done! ✅"
                 },
                 push_token,
                 server_token
@@ -123,10 +131,12 @@ defmodule ChngeApi.Servers.NotificationServer do
 
             :midnight ->
               Logger.info("Send push notification midnight: #{user_id}")
+
               ChngeApi.Core.Notification.send(
                 %{
                   title: "🌙 Day's Overview Ready!",
-                  body: "Your daily insights are here! Take a moment to review your day. Tap to see what went well and what can be better tomorrow. 💤"
+                  body:
+                    "Your daily insights are here! Take a moment to review your day. Tap to see what went well and what can be better tomorrow. 💤"
                 },
                 push_token,
                 server_token
@@ -146,15 +156,21 @@ defmodule ChngeApi.Servers.NotificationServer do
 
   # schedule the messages to be sent in the future
   defp schedule_messages(state) do
+    Logger.info("fn schedule_messages")
+
     # Fetch user data by id
     {status, result} =
       ChngeApi.Core.Python.execute_file_with_params(@firebase_user_by_id, [state.id])
 
+    Logger.info("fn schedule_messages: Fetch user data. User status: #{status}")
 
     case status do
       :ok ->
+        Logger.info("fn schedule_messages: Success Fetch User Data. Schedule Notifications")
         data = Jason.decode!(result)
         timezone = Kernel.get_in(data, ["profile", "timezone"])
+
+        Logger.info("fn schedule_messages: Timezone: #{timezone}")
 
         # Schedule 1 PM message
         next_seven_am =
@@ -163,7 +179,10 @@ defmodule ChngeApi.Servers.NotificationServer do
             timezone
           )
 
-        IO.inspect("Scheduled next 7am, adding: #{next_seven_am - :os.system_time(:second)} seconds")
+        Logger.info(
+          "Scheduled next 7am, adding: #{next_seven_am - :os.system_time(:second)} seconds"
+        )
+
         Process.send_after(self(), :seven_am, next_seven_am - :os.system_time(:second))
 
         # Schedule 1 PM message
@@ -173,7 +192,10 @@ defmodule ChngeApi.Servers.NotificationServer do
             timezone
           )
 
-        IO.inspect("Scheduled next 1pm, adding: #{next_one_pm - :os.system_time(:second)} seconds")
+        Logger.info(
+          "Scheduled next 1pm, adding: #{next_one_pm - :os.system_time(:second)} seconds"
+        )
+
         Process.send_after(self(), :one_pm, next_one_pm - :os.system_time(:second))
 
         # Schedule 6 PM message
@@ -183,7 +205,10 @@ defmodule ChngeApi.Servers.NotificationServer do
             timezone
           )
 
-        IO.inspect("Scheduled next 6pm, adding: #{next_six_pm - :os.system_time(:second)} seconds")
+        Logger.info(
+          "Scheduled next 6pm, adding: #{next_six_pm - :os.system_time(:second)} seconds"
+        )
+
         Process.send_after(self(), :six_pm, next_six_pm - :os.system_time(:second))
 
         # Schedule midnight message
@@ -193,8 +218,12 @@ defmodule ChngeApi.Servers.NotificationServer do
             timezone
           )
 
-        IO.inspect("Scheduled midnight, adding: #{next_midnight - :os.system_time(:second)} seconds")
+        Logger.info(
+          "Scheduled midnight, adding: #{next_midnight - :os.system_time(:second)} seconds"
+        )
+
         Process.send_after(self(), :midnight, next_midnight - :os.system_time(:second))
+
       _ ->
         Logger.info("There was an issue scheduling the process: #{state.id}")
         :error
@@ -204,7 +233,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   # check that will shut the process down
   defp check_and_stop(state) do
     if state[:six_pm_sent] and state[:midnight_sent] and
-      state[:seven_am_sent] and state[:one_pm_sent] do
+         state[:seven_am_sent] and state[:one_pm_sent] do
       # Both flags are set, stop the process
       GenServer.stop(self(), :normal)
     end
