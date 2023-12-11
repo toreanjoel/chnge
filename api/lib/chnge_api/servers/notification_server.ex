@@ -210,8 +210,7 @@ defmodule ChngeApi.Servers.NotificationServer do
           )
 
         Logger.info("Scheduled midnight, adding: #{next_midnight - curr_time} seconds")
-        # Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
-        Process.send_after(self(), :midnight, 6000)
+        Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
 
       _ ->
         Logger.info("There was an issue scheduling the process: #{state.id}")
