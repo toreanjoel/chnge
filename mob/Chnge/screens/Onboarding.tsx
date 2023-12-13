@@ -1,13 +1,7 @@
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React from 'react';
 import {NavigationProp} from '@react-navigation/native';
+import {OnboardFlow} from 'react-native-onboard';
 import {VIEWS} from '../constants/views';
 
 interface RouterProps {
@@ -16,112 +10,51 @@ interface RouterProps {
 
 const Onboarding = ({navigation}: RouterProps) => {
   return (
-    <View style={styles.center}>
-      <View style={styles.onboardingImg}>
-        <Image
-          source={require('../src/assets/icon.png')}
-          style={styles.Image}
-        />
-      </View>
-      <View style={styles.onboardingContainer}>
-        {/* <View style={styles.onboardingContent}></View> */}
-        <Text style={styles.onboardingTitle}>Shape Your Financial Future</Text>
-        <Text style={styles.onboardingBody}>
-          Get ready for a transformation in the way you manage your money, keep
-          track of your habits and gain insights on yourself.
-        </Text>
-        <View style={styles.spacer} />
-        <View style={styles.onboardingActionsContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate(VIEWS.LOGIN)}>
-            <View style={styles.loginBtnContainer}>
-              <Text style={styles.loginBtn}>I'm Ready</Text>
-            </View>
-          </TouchableOpacity>
-          {/* Register */}
-          <View style={styles.createAccountContainer}>
-            <Text style={styles.newToAppText}>New to chnge?</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(VIEWS.REGISTER)}>
-              <Text style={styles.createAccountText}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </View>
+    <OnboardFlow
+      pages={[
+        {
+          title: 'Welcome to Chnge!',
+          subtitle:
+            'Transform your financial decisions with insights powered by behavioral finance. Discover patterns, get timely insights, and manage your finances smarter.',
+          imageUri: 'https://placeholder.pics/svg/300x300',
+          titleStyle: {color: '#fff', fontWeight: '500'},
+          subtitleStyle: {color: '#fff', fontWeight: '300'},
+        },
+        {
+          title: 'Why Chnge?',
+          subtitle:
+            'Personalized financial notifications, insightful pattern tracking, and easy-to-understand reports. Get ready to see your finances in a new light!',
+          imageUri: 'https://placeholder.pics/svg/300x300',
+          titleStyle: {color: '#fff', fontWeight: '500'},
+          subtitleStyle: {color: '#fff', fontWeight: '300'},
+        },
+        {
+          title: 'Start Your Journey',
+          subtitle:
+            'Get ready to gain insights about yourself and gather data, leveraging AI to work towards positive financial patterns.',
+          imageUri: 'https://placeholder.pics/svg/300x300',
+          titleStyle: {color: '#fff', fontWeight: '500'},
+          subtitleStyle: {color: '#fff', fontWeight: '300'},
+        },
+      ]}
+      primaryColor="#08141E"
+      style={styles.container}
+      primaryButtonStyle={styles.btn}
+      paginationColor="#fff"
+      paginationSelectedColor="#168EE5"
+      type={'fullscreen'}
+      showDismissButton
+      onDone={() => navigation.navigate(VIEWS.LOGIN)}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  center: {
-    display: 'flex',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#08141E',
-    paddingHorizontal: 10,
-  },
-  Image: {
-    width: 80,
-    height: 80,
-  },
-  onboardingImg: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  onboardingContainer: {},
-  onboardingContent: {},
-  onboardingTitle: {
-    color: '#fff',
-    fontSize: 24,
-    alignSelf: 'center',
-    fontWeight: '200',
-    height: 40,
-    marginVertical: 5,
-  },
-  onboardingBody: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: '200',
-    fontSize: 15,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    lineHeight: 25,
-    marginVertical: 5,
-  },
-  loginBtnContainer: {
-    height: 48,
+  btn: {
     backgroundColor: '#168EE5',
-    borderRadius: 9,
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  loginBtn: {
-    color: '#fff',
-    fontSize: 15,
-  },
-  createAccountContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 20,
-  },
-  newToAppText: {
-    color: '#6E6E6E',
-    fontSize: 15,
-  },
-  createAccountText: {
-    color: '#fff',
-    fontSize: 15,
-  },
-  onboardingActionsContainer: {},
-  spacer: {
-    padding: 10,
+  container: {
+    backgroundColor: '#08141E',
   },
 });
 

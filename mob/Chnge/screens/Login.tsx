@@ -58,6 +58,7 @@ const Login = ({navigation}: RouterProps) => {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView>
+        <View style={styles.spacer} />
         {/* Header container */}
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Log In</Text>
@@ -102,13 +103,13 @@ const Login = ({navigation}: RouterProps) => {
         )}
 
         {/* Forgot Password */}
-        <View style={styles.forgotPasswordContainer}>
+        {/* <View style={styles.forgotPasswordContainer}>
           <TouchableOpacity
             onPress={() => console.log('Navigate: Forgot Password')}>
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
-        </View>
-
+        </View> */}
+        <View style={styles.spacer} />
         {/* Register */}
         <View style={styles.createAccountContainer}>
           <Text style={styles.newToAppText}>New to chnge?</Text>
@@ -116,16 +117,16 @@ const Login = ({navigation}: RouterProps) => {
             <Text style={styles.createAccountText}>Create Account</Text>
           </TouchableOpacity>
         </View>
-
+        <View style={styles.spacer} />
         {/* Social sign up */}
-        <View style={styles.socialsDividerContainer}>
+        {/* <View style={styles.socialsDividerContainer}>
           <View style={styles.socialsDividerLine} />
           <Text style={styles.socialsDividerText}>OR</Text>
           <View style={styles.socialsDividerLine} />
-        </View>
+        </View> */}
 
         {/* Login button (Google) */}
-        <View style={styles.socialSignInContainer}>
+        {/* <View style={styles.socialSignInContainer}>
           {loadingGoogle ? (
             <View style={styles.loginBtnLoaderContainer}>
               <ActivityIndicator size="large" color="#168EE5" />
@@ -136,10 +137,10 @@ const Login = ({navigation}: RouterProps) => {
                 <Text style={styles.loginBtn}>Continue with Google</Text>
               </View>
             </TouchableOpacity>
-          )}
+          )} */}
 
-          {/* Login button (Apple) */}
-          {loadingApple ? (
+        {/* Login button (Apple) */}
+        {/* {loadingApple ? (
             <View style={styles.loginBtnLoaderContainer}>
               <ActivityIndicator size="large" color="#168EE5" />
             </View>
@@ -150,7 +151,7 @@ const Login = ({navigation}: RouterProps) => {
               </View>
             </TouchableOpacity>
           )}
-        </View>
+        </View> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -161,6 +162,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#08141E',
     paddingHorizontal: 15,
+  },
+  spacer: {
+    paddingVertical: 10,
   },
   headerContainer: {
     display: 'flex',
@@ -256,7 +260,6 @@ const styles = StyleSheet.create({
     gap: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 30,
   },
   socialsDividerLine: {
     backgroundColor: '#6E6E6E',

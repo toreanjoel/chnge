@@ -29,7 +29,7 @@ const Settings = ({}: RouterProps) => {
         <Text style={styles.headerText}>Settings</Text>
       </View>
       <View style={styles.spacer} />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.buttonWrapper}
         onPress={() => console.log('profile')}>
         <View style={styles.iconWrapper}>
@@ -64,7 +64,7 @@ const Settings = ({}: RouterProps) => {
         </View>
         <Text style={styles.text}>Privacy Policy</Text>
       </TouchableOpacity>
-      <View style={styles.spacer} />
+      <View style={styles.spacer} /> */}
       <TouchableOpacity
         style={styles.buttonWrapper}
         onPress={() => auth.signOut()}>

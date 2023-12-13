@@ -1,5 +1,5 @@
 import '../config/firebase';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer, DarkTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useAuth} from '../hooks/useAuth';
@@ -7,6 +7,7 @@ import Login from './Login';
 import Main from './Main';
 import Register from './Register';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {update, ref} from 'firebase/database';
 import {FIREBASE_DB} from '../config/firebase';
 import Onboarding from './Onboarding';
@@ -19,8 +20,40 @@ import InsightDetails from './InsightDetails';
 
 const Stack = createNativeStackNavigator();
 
+const setOnboardedData = async value => {
+  try {
+    await AsyncStorage.setItem('ONBOARDED', value);
+  } catch (e) {
+    // saving error
+    console.error('Error saving onboarded data', e);
+  }
+};
+
+const getOnboardedData = async () => {
+  try {
+    const value = await AsyncStorage.getItem('ONBOARDED');
+    return value !== null;
+  } catch (e) {
+    // error reading value
+    console.error('Error reading onboarded data', e);
+    return false;
+  }
+};
+
 const Auth = () => {
   const {user} = useAuth();
+  const [hasOnboarded, setHasOnboarded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const onboarded = await getOnboardedData();
+      setHasOnboarded(onboarded);
+      if (!onboarded) {
+        setOnboardedData('true');
+      }
+    })();
+  }, []);
+
   const isAuthenticated = !!user;
 
   if (user === undefined) {
@@ -31,19 +64,19 @@ const Auth = () => {
     );
   }
 
-  // here we set the meta data for the user logging
+  // User metadata update logic here
   if (user) {
     // set the online time
     update(ref(FIREBASE_DB, `/users/${user.uid}/metadata`), {
       lastOnline: Date.now(),
     });
 
-    // set the timezone - we do this incase user travels
+    // set the timezone - we do this in case user travels
     update(ref(FIREBASE_DB, `/users/${user.uid}/profile`), {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
 
-    // set the current date to make sure on startup we are on the reelvant one
+    // set the current date to make sure on startup we are on the relevant one
     update(ref(FIREBASE_DB, `/users/${user.uid}/transactions`), {
       current: moment().format('YYYY-MM-DD'),
       selected: moment().format('YYYY-MM-DD'),
@@ -54,7 +87,13 @@ const Auth = () => {
     <View style={styles.navContainer}>
       <NavigationContainer theme={DarkTheme}>
         <Stack.Navigator
-          initialRouteName={VIEWS.ONBOARDING}
+          initialRouteName={
+            isAuthenticated
+              ? VIEWS.MAIN
+              : hasOnboarded
+              ? VIEWS.LOGIN
+              : VIEWS.ONBOARDING
+          }
           screenOptions={{headerShown: false}}>
           {isAuthenticated ? (
             <>
@@ -78,10 +117,9 @@ const Auth = () => {
             </>
           ) : (
             <>
-              {/* We need to make sure onboarding happens initially only - store in storage */}
-              <Stack.Screen name={VIEWS.ONBOARDING} component={Onboarding} />
               <Stack.Screen name={VIEWS.LOGIN} component={Login} />
               <Stack.Screen name={VIEWS.REGISTER} component={Register} />
+              <Stack.Screen name={VIEWS.ONBOARDING} component={Onboarding} />
             </>
           )}
         </Stack.Navigator>

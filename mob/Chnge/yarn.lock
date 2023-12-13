@@ -6545,6 +6545,11 @@ react-native-gesture-handler@^2.12.1:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-onboard@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-onboard/-/react-native-onboard-2.6.0.tgz#46c0dd62c11ee2fbd5b545006ae1391f7dafb254"
+  integrity sha512-33mO3L0s4BxSPJEqpUaVVUVD28iMyVMO+ey4gB4fURVgQRTm1EcDydUsgRhiirGMKdyK8kqh6NI0TTKW7GSYSQ==
+
 react-native-reanimated@^3.4.2:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.6.1.tgz#5add41efafac6d0befd9786e752e7f26dbe903b7"

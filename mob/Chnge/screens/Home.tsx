@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useState, useEffect} from 'react';
 import {faBell} from '@fortawesome/free-solid-svg-icons';
@@ -21,6 +28,8 @@ const Stack = createNativeStackNavigator();
 
 const HomeView = ({navigation}: RouterProps) => {
   const {user} = useAuth();
+  const [loadingTransactions, setLoadingTransactions] =
+    useState<Boolean>(false);
   const [transactions, setTransactions] = useState<TransactionHistory>();
   const [insight, setInsight] = useState<string | undefined>();
   const [selectedDate, setSelectedDate] = useState<string | undefined>();
@@ -28,6 +37,7 @@ const HomeView = ({navigation}: RouterProps) => {
   // set the current initial date
   useEffect(() => {
     if (user) {
+      setLoadingTransactions(true);
       onValue(
         ref(FIREBASE_DB, `users/${user.uid}/transactions/current`),
         querySnapShot => {
@@ -36,11 +46,13 @@ const HomeView = ({navigation}: RouterProps) => {
         },
       );
     }
+    setLoadingTransactions(false);
   }, [user]);
 
   // get transaction date for the selected date
   useEffect(() => {
     if (user) {
+      setLoadingTransactions(true);
       onValue(
         ref(
           FIREBASE_DB,
@@ -53,6 +65,7 @@ const HomeView = ({navigation}: RouterProps) => {
         },
       );
     }
+    setLoadingTransactions(false);
   }, [selectedDate, user]);
 
   if (!user) {
@@ -90,25 +103,20 @@ const HomeView = ({navigation}: RouterProps) => {
 
   return (
     <GestureHandlerRootView style={styles.mainContainer}>
+      <View style={styles.spacer} />
+      {insight && (
+        <TouchableOpacity
+          style={styles.insight}
+          onPress={() => {
+            navigation.navigate(VIEWS.VIEW_INSIGHT, {
+              details: insight,
+              selectedDate,
+            });
+          }}>
+          <FontAwesomeIcon size={20} icon={faBell} color="#fff" />
+        </TouchableOpacity>
+      )}
       <View style={styles.calendarContainer}>
-        <View style={styles.spacer} />
-        <View style={styles.insightWrapper}>
-          <View style={styles.insightSpacer} />
-          {insight ? (
-            <TouchableOpacity
-              style={styles.insight}
-              onPress={() => {
-                navigation.navigate(VIEWS.VIEW_INSIGHT, {
-                  details: insight,
-                  selectedDate,
-                });
-              }}>
-              <FontAwesomeIcon size={20} icon={faBell} color="#fff" />
-            </TouchableOpacity>
-          ) : (
-            <View style={styles.insight} />
-          )}
-        </View>
         <Calendar
           onSelectDate={(value: any) => {
             update(ref(FIREBASE_DB, `/users/${user.uid}/transactions`), {
@@ -127,6 +135,7 @@ const HomeView = ({navigation}: RouterProps) => {
               ? styles.contentListContainer
               : styles.contentEmptyContainer),
           }}>
+          {/* Showing transactions if avail or fallback */}
           {hasTransactions() ? (
             <FlatList
               data={transactions ? transactionToList(transactions.items) : []}
@@ -154,7 +163,13 @@ const HomeView = ({navigation}: RouterProps) => {
               }}
             />
           ) : (
-            <Text style={styles.noTransactions}>No Transactions</Text>
+            <Text style={styles.noTransactions}>
+              {loadingTransactions ? (
+                <ActivityIndicator size="small" color="#168EE5" />
+              ) : (
+                'No Transactions'
+              )}
+            </Text>
           )}
         </View>
       </View>
@@ -193,7 +208,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   insight: {
-    height: 20,
+    position: 'absolute',
+    right: 0,
+    padding: 20,
   },
   contentEmptyContainer: {
     display: 'flex',
@@ -213,7 +230,9 @@ const styles = StyleSheet.create({
     color: '#212c35',
     fontSize: 20,
   },
-  calendarContainer: {},
+  calendarContainer: {
+    marginTop: 15,
+  },
   transactionsContainer: {
     flex: 2,
   },

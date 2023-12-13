@@ -74,11 +74,11 @@ const Register = ({navigation}: RouterProps) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      {/* <TouchableOpacity onPress={() => navigation.goBack()}>
         <View style={styles.navActionContainer}>
           <FontAwesomeIcon size={20} icon={faArrowLeft} color="#fff" />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View style={styles.spacer} />
       <ScrollView>
         {/* Header container */}
@@ -125,23 +125,30 @@ const Register = ({navigation}: RouterProps) => {
             <ActivityIndicator size="large" color="#168EE5" />
           </View>
         ) : (
-          <TouchableOpacity onPress={signUp}>
-            <View style={styles.signUpBtnContainer}>
-              <Text style={styles.loginBtn}>Sign Up</Text>
-            </View>
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity onPress={signUp}>
+              <View style={styles.signUpBtnContainer}>
+                <Text style={styles.loginBtn}>Sign Up</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <View style={styles.backUpBtnContainer}>
+                <Text style={styles.backBtn}>Back</Text>
+              </View>
+            </TouchableOpacity>
+          </>
         )}
-
+        <View style={styles.spacer} />
         {/* Social sign up */}
-        <View style={styles.socialsDividerContainer}>
+        {/* <View style={styles.socialsDividerContainer}>
           <View style={styles.socialsDividerLine} />
           <Text style={styles.socialsDividerText}>OR</Text>
           <View style={styles.socialsDividerLine} />
-        </View>
+        </View> */}
 
         {/* Login button (Google) */}
         <View style={styles.socialSignInContainer}>
-          {loadingGoogle ? (
+          {/* {loadingGoogle ? (
             <View style={styles.loginBtnLoaderContainer}>
               <ActivityIndicator size="large" color="#168EE5" />
             </View>
@@ -151,10 +158,10 @@ const Register = ({navigation}: RouterProps) => {
                 <Text style={styles.loginBtn}>Continue with Google</Text>
               </View>
             </TouchableOpacity>
-          )}
+          )} */}
 
           {/* Login button (Apple) */}
-          {loadingApple ? (
+          {/* {loadingApple ? (
             <View style={styles.loginBtnLoaderContainer}>
               <ActivityIndicator size="large" color="#168EE5" />
             </View>
@@ -164,7 +171,7 @@ const Register = ({navigation}: RouterProps) => {
                 <Text style={styles.loginBtn}>Continue with Apple</Text>
               </View>
             </TouchableOpacity>
-          )}
+          )} */}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -221,6 +228,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 10,
   },
+  backUpBtnContainer: {
+    height: 48,
+    borderColor: '#6E6E6E',
+    borderWidth: 1,
+    borderRadius: 9,
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
   loginSocialBtnContainer: {
     opacity: 0.3,
     height: 48,
@@ -246,13 +264,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 15,
   },
+  backBtn: {
+    color: '#fff',
+    fontSize: 15,
+  },
   socialsDividerContainer: {
     display: 'flex',
     flexDirection: 'row',
     gap: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 30,
   },
   socialsDividerLine: {
     backgroundColor: '#6E6E6E',

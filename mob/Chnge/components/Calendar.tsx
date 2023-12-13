@@ -34,6 +34,7 @@ const Calendar = ({onSelectDate, selected, insight}: any) => {
   return (
     <>
       <View style={styles.centered}>
+        <Text style={styles.today}>Today</Text>
         <Text style={styles.title}>{currentMonth}</Text>
       </View>
       <View style={styles.dateSection}>
@@ -49,6 +50,7 @@ const Calendar = ({onSelectDate, selected, insight}: any) => {
               date={date}
               onSelectDate={onSelectDate}
               selected={selected}
+              // Should we query the insights check beforehand? Seems like getting data needs to have a separate option or
               hasInsight={!!insight}
             />
           ))}
@@ -69,6 +71,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '200',
     color: '#fff',
+    // fontWeight: 'bold',
+  },
+  today: {
+    fontSize: 15,
+    fontWeight: '200',
+    color: '#6E6E6E',
     // fontWeight: 'bold',
   },
   dateSection: {
