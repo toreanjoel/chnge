@@ -10,6 +10,7 @@ const VIEWS = {
   EDIT_TRANSACTION: 'edit-transaction',
   VIEW_TRANSACTION: 'view-transaction',
   VIEW_INSIGHT: 'view-insight',
+  VIEW_DAILY_GOAL: 'view-daily-goal',
 };
 
 export {VIEWS};

@@ -109,7 +109,6 @@ const HomeView = ({navigation}: RouterProps) => {
           style={styles.insight}
           onPress={() => {
             navigation.navigate(VIEWS.VIEW_INSIGHT, {
-              details: insight,
               selectedDate,
             });
           }}>

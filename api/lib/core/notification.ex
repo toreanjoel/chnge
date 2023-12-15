@@ -9,8 +9,10 @@ require Logger
   @doc """
     Send off a notification
   """
-  def send(%{ title: title, body: body}, device_token, bearer_token) do
+  def send(%{ title: title, body: body, data: data}, device_token, bearer_token) do
     headers = ["Authorization": "Bearer #{bearer_token}", "Content-Type": "application/json"]
+    # we make sure there is some data to fall back on
+    extra_data = if is_nil(data), do: %{}, else: data
     {_status, resp} = HTTPoison.post(@url, Jason.encode!(
       %{
         "message" => %{
@@ -18,6 +20,7 @@ require Logger
             "title" => title,
             "body" => body,
           },
+          "data" => extra_data,
           "token" => device_token
         },
       }

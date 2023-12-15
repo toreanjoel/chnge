@@ -16,11 +16,12 @@ import TransactionDetails from './TransactionDetails';
 import TransactionEdit from './TransactionEdit';
 import TransactionAdd from './TransactionAdd';
 import moment from 'moment';
-import InsightDetails from './InsightDetails';
+import DailyInsight from './DailyInsight';
+import DailyGoal from './DailyGoal';
 
 const Stack = createNativeStackNavigator();
 
-const setOnboardedData = async value => {
+const setOnboardedData = async (value: any) => {
   try {
     await AsyncStorage.setItem('ONBOARDED', value);
   } catch (e) {
@@ -100,7 +101,11 @@ const Auth = () => {
               <Stack.Screen name={VIEWS.MAIN} component={Main} />
               <Stack.Screen
                 name={VIEWS.VIEW_INSIGHT}
-                component={InsightDetails}
+                component={DailyInsight}
+              />
+              <Stack.Screen
+                name={VIEWS.VIEW_DAILY_GOAL}
+                component={DailyGoal}
               />
               <Stack.Screen
                 name={VIEWS.VIEW_TRANSACTION}
