@@ -211,8 +211,7 @@ defmodule ChngeApi.Servers.NotificationServer do
           )
 
         Logger.info("Scheduled midnight, adding: #{next_midnight - curr_time} seconds")
-        # Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
-        Process.send_after(self(), :midnight, 4000)
+        Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
 
       _ ->
         Logger.info("There was an issue scheduling the process: #{state.id}")
@@ -279,8 +278,7 @@ defmodule ChngeApi.Servers.NotificationServer do
                 )
 
               Logger.info("Scheduled next 7am, adding: #{next_seven_am - curr_time} seconds")
-              # Process.send_after(self(), :seven_am, (next_seven_am - curr_time) * 1000)
-              Process.send_after(self(), :seven_am, 4000)
+              Process.send_after(self(), :seven_am, (next_seven_am - curr_time) * 1000)
 
               {:ok, "Successfully got overview data updated"}
 
