@@ -3,6 +3,7 @@
  */
 import {AppRegistry, Platform} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import App from './App';
 import {name as appName} from './app.json';
 import {VIEWS} from './constants/views';
@@ -26,7 +27,7 @@ messaging().onNotificationOpenedApp(async msg => {
 });
 
 // helpers navigate based off view
-function processInitView(msg) {
+const processInitView = async (msg) => {
   // No message we return
   if (!msg) return;
   // Handle the notification data here and navigate to the specific view
@@ -35,17 +36,29 @@ function processInitView(msg) {
   // check if data exists
   if (!data) return;
 
+  console.log(data);
+
   // We check the view to process
   switch (data.view) {
     case VIEWS.VIEW_INSIGHT:
-      console.log("NAVIGATE: INSIGHTS")
+      try {
+        await AsyncStorage.setItem('PENDING_VIEW', `${VIEWS.VIEW_INSIGHT}:${data.date}`);
+      } catch (e) {
+        // saving error
+        console.error('Error saving pending view data', e);
+      }
       break;
-      case VIEWS.VIEW_DAILY_GOAL:
-      console.log("NAVIGATE: DAILY GOAL")
+    case VIEWS.VIEW_DAILY_GOAL:
+      try {
+        await AsyncStorage.setItem('PENDING_VIEW', `${VIEWS.VIEW_DAILY_GOAL}:${data.date}`);
+      } catch (e) {
+        // saving error
+        console.error('Error saving pending view data', e);
+      }
       break;
     default:
       break;
   }
-}
+};
 
 AppRegistry.registerComponent(appName, () => App);

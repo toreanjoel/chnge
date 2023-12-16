@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   TouchableOpacity,
-  Platform,
   ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -24,18 +23,18 @@ const Login = ({navigation}: RouterProps) => {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loadingNormal, setLoadingNormal] = useState(false);
-  const [loadingGoogle, setLoadingGoogle] = useState(false);
-  const [loadingApple, setLoadingApple] = useState(false);
+  // const [loadingGoogle, setLoadingGoogle] = useState(false);
+  // const [loadingApple, setLoadingApple] = useState(false);
 
   const auth = FIREBASE_AUTH;
 
   //sign in function
-  const socialSignInGoogle = async () => {
-    console.log('Continue with social: Google');
-  };
-  const socialSignInApple = async () => {
-    console.log('Continue with social: Apple');
-  };
+  // const socialSignInGoogle = async () => {
+  //   console.log('Continue with social: Google');
+  // };
+  // const socialSignInApple = async () => {
+  //   console.log('Continue with social: Apple');
+  // };
 
   const signIn = async () => {
     setLoadingNormal(true);

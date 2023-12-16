@@ -1,13 +1,13 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import moment from 'moment';
 import Date from './Date';
 
-const Calendar = ({onSelectDate, selected, insight}: any) => {
+const Calendar = ({onSelectDate, selected}: any) => {
   const [dates, setDates] = useState<any>([]);
-  const [scrollPosition, setScrollPosition] = useState<any>(0);
+  // const [scrollPosition, setScrollPosition] = useState<any>(0);
   const [currentMonth, setCurrentMonth] = useState<any>();
-  const scrollViewRef = useRef();
+
   // get the dates from today to 10 days from now, format them as strings and store them in state
   const getDates = () => {
     const dateRange = [];
@@ -42,18 +42,20 @@ const Calendar = ({onSelectDate, selected, insight}: any) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           // onScroll is a native event that returns the number of pixels the user has scrolled
-          onScroll={e => setScrollPosition(e.nativeEvent.contentOffset.x)}
+          // onScroll={e => setScrollPosition(e.nativeEvent.contentOffset.x)}
           scrollEventThrottle={5}>
-          {dates.map((date: any, index: any) => (
-            <Date
-              key={index}
-              date={date}
-              onSelectDate={onSelectDate}
-              selected={selected}
-              // Should we query the insights check beforehand? Seems like getting data needs to have a separate option or
-              hasInsight={!!insight}
-            />
-          ))}
+          {dates.map((date: any, index: any) => {
+            return (
+              <Date
+                key={index}
+                date={date}
+                onSelectDate={onSelectDate}
+                selected={selected}
+                // Should we query the insights check beforehand? Seems like getting data needs to have a separate option or
+                // hasInsight
+              />
+            );
+          })}
         </ScrollView>
       </View>
     </>

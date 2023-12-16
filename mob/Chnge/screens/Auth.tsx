@@ -1,6 +1,10 @@
 import '../config/firebase';
-import React, {useEffect, useState} from 'react';
-import {NavigationContainer, DarkTheme} from '@react-navigation/native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  NavigationContainer,
+  DarkTheme,
+  NavigationContainerRef,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useAuth} from '../hooks/useAuth';
 import Login from './Login';
@@ -21,39 +25,9 @@ import DailyGoal from './DailyGoal';
 
 const Stack = createNativeStackNavigator();
 
-const setOnboardedData = async (value: any) => {
-  try {
-    await AsyncStorage.setItem('ONBOARDED', value);
-  } catch (e) {
-    // saving error
-    console.error('Error saving onboarded data', e);
-  }
-};
-
-const getOnboardedData = async () => {
-  try {
-    const value = await AsyncStorage.getItem('ONBOARDED');
-    return value !== null;
-  } catch (e) {
-    // error reading value
-    console.error('Error reading onboarded data', e);
-    return false;
-  }
-};
-
 const Auth = () => {
   const {user} = useAuth();
-  const [hasOnboarded, setHasOnboarded] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const onboarded = await getOnboardedData();
-      setHasOnboarded(onboarded);
-      if (!onboarded) {
-        setOnboardedData('true');
-      }
-    })();
-  }, []);
+  const navigationRef = useRef<NavigationContainerRef>(null);
 
   const isAuthenticated = !!user;
 
@@ -86,15 +60,23 @@ const Auth = () => {
 
   return (
     <View style={styles.navContainer}>
-      <NavigationContainer theme={DarkTheme}>
-        <Stack.Navigator
-          initialRouteName={
-            isAuthenticated
-              ? VIEWS.MAIN
-              : hasOnboarded
-              ? VIEWS.LOGIN
-              : VIEWS.ONBOARDING
+      <NavigationContainer
+        theme={DarkTheme}
+        ref={navigationRef}
+        onReady={async () => {
+          // We navigate to any pending view we had in memory
+          const pendingView = await AsyncStorage.getItem('PENDING_VIEW');
+          if (pendingView && navigationRef.current) {
+            const screen = pendingView.split(':')[0];
+            const date = pendingView.split(':')[1];
+            // Perform the navigation
+            navigationRef.current.navigate(screen, {selectedDate: date});
+            // Clear the AsyncStorage item
+            await AsyncStorage.removeItem('PENDING_VIEW');
           }
+        }}>
+        <Stack.Navigator
+          initialRouteName={isAuthenticated ? VIEWS.MAIN : VIEWS.LOGIN}
           screenOptions={{headerShown: false}}>
           {isAuthenticated ? (
             <>

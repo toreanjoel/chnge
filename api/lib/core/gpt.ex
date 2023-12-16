@@ -30,13 +30,13 @@ defmodule ChngeApi.Core.Gpt.Prompt do
 
     💡 Tailored Actionable Insights
 
-    Provide personalized suggestions based on your identified spending habits and mood correlations. Include:
+    Provide personalized suggestions based on identified spending habits and mood correlations. Include:
 
     1️⃣ [First Insight]: ...
     2️⃣ [Second Insight]: ...
     3️⃣ [Third Insight]: ...
 
-    These insights should be specific to your recent spending trends and habits.
+    These insights should be specific to recent spending trends and habits.
     Note: If adding the points of insights, make some spacing if they are points or bullet points so its easy to read.
 
     📌 Relevance of Today's Data

@@ -84,6 +84,7 @@ const requestUserPermission = async () => {
 };
 
 // we create a new token if needed
+// TODO: we need to make sure we update the token if the user changes devices
 const getNewFCMToken = async (user: any) => {
   try {
     const push_token = await requestUserPermission();

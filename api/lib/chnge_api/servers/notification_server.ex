@@ -77,7 +77,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   end
 
   # Schedule and process the notifications
-  defp push_notification(%{id: user_id} = data, type) do
+  defp push_notification(%{id: user_id} = data, type, extra_data \\ %{}) do
     # Fetch user data by id
     {status, result} = ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [user_id])
 
@@ -93,14 +93,16 @@ defmodule ChngeApi.Servers.NotificationServer do
           case type do
             :seven_am ->
               Logger.info("Send push notification 7am: #{user_id}")
+
+              data = Map.merge(%{
+                view: "view-daily-goal"
+              }, extra_data)
+
               ChngeApi.Core.Notification.send(
                 %{
                   title: ChngeApi.Core.Notification.random_morning_notification().title,
                   body: ChngeApi.Core.Notification.random_morning_notification().body,
-                  data: %{
-                    # TODO: We need to send extra data i.e date for the data we want etc
-                    view: "view-daily-goal"
-                  }
+                  data: data
                 },
                 push_token,
                 server_token
@@ -135,14 +137,15 @@ defmodule ChngeApi.Servers.NotificationServer do
             :midnight ->
               Logger.info("Send push notification midnight: #{user_id}")
 
+              data = Map.merge(%{
+                view: "view-insight"
+              }, extra_data)
+
               ChngeApi.Core.Notification.send(
                 %{
                   title: ChngeApi.Core.Notification.random_night_notification().title,
                   body: ChngeApi.Core.Notification.random_night_notification().body,
-                  data: %{
-                    # TODO: We need to send extra data i.e date for the data we want etc
-                    view: "view-insight"
-                  }
+                  data: data
                 },
                 push_token,
                 server_token
@@ -264,7 +267,7 @@ defmodule ChngeApi.Servers.NotificationServer do
               ])
 
               # sending push after we generated from AI
-              push_notification(state, :midnight)
+              push_notification(state, :midnight, %{ date: current_date})
 
               # schedule the 7am based on the generated overview that was successfully made
               next_seven_am =
@@ -322,7 +325,7 @@ defmodule ChngeApi.Servers.NotificationServer do
               ])
 
               # sending push after we generated from AI
-              push_notification(state, :seven_am)
+              push_notification(state, :seven_am, %{date: prev_date_insight})
 
               {:ok, "Successfully got daily goal data updated"}
 
