@@ -26,7 +26,7 @@ const DailyGoal = ({navigation, route}: any) => {
       onValue(
         ref(
           FIREBASE_DB,
-          `users/${user.uid}/transactions/history/${selectedDate}/insight`,
+          `users/${user.uid}/transactions/history/${selectedDate}/daily-goal`,
         ),
         querySnapShot => {
           let data = querySnapShot.val() || {};

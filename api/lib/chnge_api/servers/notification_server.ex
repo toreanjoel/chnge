@@ -4,6 +4,7 @@ defmodule ChngeApi.Servers.NotificationServer do
 
   @get_user_by_id "get_user_by_id"
   @set_insight "set_insight"
+  @set_daily_goal "set_daily_goal"
 
   # Starts the server with base argument data
   def start_link(payload) do
@@ -27,12 +28,12 @@ defmodule ChngeApi.Servers.NotificationServer do
     {:ok, new_state}
   end
 
-  def handle_info(:seven_am, state) do
+  def handle_info({:seven_am, insight_date}, state) do
     Logger.info("fn handle_info: :seven_am listener")
     new_state = Map.put(state, :seven_am_sent, true)
 
-    # send push notification
-    push_notification(state, :seven_am)
+    # process daily goal
+    process_daily_goal(new_state, insight_date)
 
     # check if we need to stop the process
     check_and_stop(new_state)
@@ -92,14 +93,12 @@ defmodule ChngeApi.Servers.NotificationServer do
           case type do
             :seven_am ->
               Logger.info("Send push notification 7am: #{user_id}")
-
               ChngeApi.Core.Notification.send(
                 %{
-                  title: "🌞 Good Morning! Ready for a Fresh Start?",
-                  body:
-                    "Check out yesterday's insights. Tap here to view and prepare yourself! 📈",
+                  title: ChngeApi.Core.Notification.random_morning_notification().title,
+                  body: ChngeApi.Core.Notification.random_morning_notification().body,
                   data: %{
-                    # The view we want to render
+                    # TODO: We need to send extra data i.e date for the data we want etc
                     view: "view-daily-goal"
                   }
                 },
@@ -112,9 +111,9 @@ defmodule ChngeApi.Servers.NotificationServer do
 
               ChngeApi.Core.Notification.send(
                 %{
-                  title: "🕐 Midday Check-in! How's Your Day Going?",
-                  body:
-                    "Halfway through the day! Remember to log any plans or transactions. Keep your day on track! 📝"
+                  title: ChngeApi.Core.Notification.random_afternoon_notification().title,
+                  body: ChngeApi.Core.Notification.random_afternoon_notification().body,
+                  data: %{}
                 },
                 push_token,
                 server_token
@@ -125,9 +124,9 @@ defmodule ChngeApi.Servers.NotificationServer do
 
               ChngeApi.Core.Notification.send(
                 %{
-                  title: "🌆 Evening Reminder: Log Today's Transactions",
-                  body:
-                    "Let's wrap up the day! Don't forget to add today's transactions. A few taps and you're done! ✅"
+                  title: ChngeApi.Core.Notification.random_evening_notification().title,
+                  body: ChngeApi.Core.Notification.random_evening_notification().body,
+                  data: %{}
                 },
                 push_token,
                 server_token
@@ -138,11 +137,10 @@ defmodule ChngeApi.Servers.NotificationServer do
 
               ChngeApi.Core.Notification.send(
                 %{
-                  title: "🌙 Day's Overview Ready!",
-                  body:
-                    "Your daily insights are here! Take a moment to review your day. Tap to see what went well and what can be better tomorrow. 💤",
+                  title: ChngeApi.Core.Notification.random_night_notification().title,
+                  body: ChngeApi.Core.Notification.random_night_notification().body,
                   data: %{
-                    # The view we want to render
+                    # TODO: We need to send extra data i.e date for the data we want etc
                     view: "view-insight"
                   }
                 },
@@ -241,14 +239,14 @@ defmodule ChngeApi.Servers.NotificationServer do
         current_date = Kernel.get_in(data, ["transactions", "current"])
         current_days_data = Map.get(history, current_date, %{})
         history_data = if is_nil(history), do: %{}, else: history
-
         # We check if there is data and then process to send notifications, do noting otherwise
         if !Enum.empty?(current_days_data) do
           insight_list = create_insight_list(history_data, current_date)
+          current_day_items = Map.get(current_days_data, "items", %{})
 
           {ai_status, resp} =
             ChngeApi.Core.Gpt.insight(
-              Jason.encode!(current_days_data),
+              Jason.encode!(current_day_items),
               Jason.encode!(insight_list)
             )
 
@@ -265,8 +263,6 @@ defmodule ChngeApi.Servers.NotificationServer do
                 resp
               ])
 
-              # TODO: generate the todo for the morning or day to schedule based on insight
-
               # sending push after we generated from AI
               push_notification(state, :midnight)
 
@@ -278,7 +274,12 @@ defmodule ChngeApi.Servers.NotificationServer do
                 )
 
               Logger.info("Scheduled next 7am, adding: #{next_seven_am - curr_time} seconds")
-              Process.send_after(self(), :seven_am, (next_seven_am - curr_time) * 1000)
+              prev_insight_data = %{
+                insight: resp,
+                date: current_date
+              }
+
+              Process.send_after(self(), {:seven_am, prev_insight_data}, (next_seven_am - curr_time) * 1000)
 
               {:ok, "Successfully got overview data updated"}
 
@@ -288,6 +289,49 @@ defmodule ChngeApi.Servers.NotificationServer do
         else
           Logger.info("There was no data to process for the day")
           {:ok, "No data to process for the day"}
+        end
+
+      _ ->
+        Logger.info("There was an issue getting the details for user: #{state.id}")
+        {:error, "No data found for user"}
+    end
+  end
+
+  # process the history data
+  defp process_daily_goal(state, %{ insight: insight, date: prev_date_insight}) do
+    # Create the script to update the overview - use prev days context
+    # Send Notification to have the user view (extra data for client to open view)
+    {status, result} = ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [state.id])
+
+    case status do
+      :ok ->
+        # We check if there is data and then process to send notifications, do noting otherwise
+        if !is_nil(insight) do
+          {ai_status, resp} =
+            ChngeApi.Core.Gpt.daily_goal(
+              insight
+            )
+
+          case ai_status do
+            :ok ->
+              # set the daily suggestion
+              ChngeApi.Core.Python.execute_file_with_params(@set_daily_goal, [
+                state.id,
+                prev_date_insight,
+                resp
+              ])
+
+              # sending push after we generated from AI
+              push_notification(state, :seven_am)
+
+              {:ok, "Successfully got daily goal data updated"}
+
+            _ ->
+              {:error, resp}
+          end
+        else
+          Logger.info("There was no data to process for the daily goal")
+          {:ok, "No data to process for the daily goal"}
         end
 
       _ ->
