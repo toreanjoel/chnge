@@ -26,10 +26,10 @@ const DailyGoal = ({navigation, route}: any) => {
       onValue(
         ref(
           FIREBASE_DB,
-          `users/${user.uid}/transactions/history/${selectedDate}/daily-goal`,
+          `users/${user.uid}/transactions/history/${selectedDate}/dailyGoal`,
         ),
         querySnapShot => {
-          let data = querySnapShot.val() || {};
+          let data = querySnapShot.val() || '';
           setDailyGoal(data);
         },
       );

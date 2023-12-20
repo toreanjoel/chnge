@@ -82,15 +82,14 @@ require Logger
     ],
     evening: [
       "The day is wrapping up. Let's log and review your spending for the day. 📚",
-      "As the sun sets, take a moment to review and reflect on your financial choices.",
-      "Unwind with a quick review of your day's financial decisions. 🌜",
-      "Dinner's ready and so is your financial summary. How did you do today?",
+      "As the sun sets, take a moment to review and reflect on your financial choices and add any missing items.",
+      "Unwind with logging last bits of the day's financial decisions. 🌜",
       "Under the evening stars, let's check how your budget fared today. ✨",
-      "Evening check: Did your spending match your budget plans?",
-      "Cozy evening? Perfect for a quick glance at today's financials.",
-      "Night skies, financial ties. Let's review your day's money moves.",
-      "Reflect on your financial decisions today. Ready for a quick review?",
-      "Bridge the gap between today and tomorrow with an evening budget check."
+      "Evening check: Did your spending match your budget plans? Make sure to update your transactions accordingly",
+      "Cozy evening? Perfect for a quick glance and add to today's financial transactions.",
+      "Night skies, financial ties. Let's review your day's money moves and add anything you might have missed",
+      "Reflect on your financial decisions today before generating insights tonight. Ready for a quick review?",
+      "Bridge the gap between today and tomorrow with an evening budget check. Let's not forget the missing items for the day."
     ],
     night: [
       "End your day with a look at your financial summary. Sleep well knowing you're on track! 💤",

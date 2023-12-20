@@ -29,7 +29,7 @@ const DailyInsight = ({navigation, route}: any) => {
           `users/${user.uid}/transactions/history/${selectedDate}/insight`,
         ),
         querySnapShot => {
-          let data = querySnapShot.val() || {};
+          let data = querySnapShot.val() || '';
           setInsightDetails(data);
         },
       );

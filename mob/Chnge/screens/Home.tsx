@@ -3,12 +3,10 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useState, useEffect} from 'react';
-import {faBell} from '@fortawesome/free-solid-svg-icons';
 import {useAuth} from '../hooks/useAuth';
 import {NavigationProp} from '@react-navigation/native';
 import {VIEWS} from '../constants/views';
@@ -18,7 +16,7 @@ import ItemCard from '../components/ItemCard';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {onValue, ref, update, remove} from 'firebase/database';
 import {FIREBASE_DB} from '../config/firebase';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import InfoCard from '../components/InfoCard';
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -32,6 +30,7 @@ const HomeView = ({navigation}: RouterProps) => {
     useState<Boolean>(false);
   const [transactions, setTransactions] = useState<TransactionHistory>();
   const [insight, setInsight] = useState<string | undefined>();
+  const [dailyGoal, setDailyGoal] = useState<string | undefined>();
   const [selectedDate, setSelectedDate] = useState<string | undefined>();
 
   // set the current initial date
@@ -53,6 +52,7 @@ const HomeView = ({navigation}: RouterProps) => {
   useEffect(() => {
     if (user) {
       setLoadingTransactions(true);
+      // get the insight data along with daily goals if relevant
       onValue(
         ref(
           FIREBASE_DB,
@@ -61,6 +61,7 @@ const HomeView = ({navigation}: RouterProps) => {
         querySnapShot => {
           let data = querySnapShot.val() || {};
           setInsight(data.insight);
+          setDailyGoal(data.dailyGoal);
           setTransactions(data);
         },
       );
@@ -104,17 +105,6 @@ const HomeView = ({navigation}: RouterProps) => {
   return (
     <GestureHandlerRootView style={styles.mainContainer}>
       <View style={styles.spacer} />
-      {insight && (
-        <TouchableOpacity
-          style={styles.insight}
-          onPress={() => {
-            navigation.navigate(VIEWS.VIEW_INSIGHT, {
-              selectedDate,
-            });
-          }}>
-          <FontAwesomeIcon size={20} icon={faBell} color="#fff" />
-        </TouchableOpacity>
-      )}
       <View style={styles.calendarContainer}>
         <Calendar
           onSelectDate={(value: any) => {
@@ -126,7 +116,32 @@ const HomeView = ({navigation}: RouterProps) => {
         />
       </View>
 
+      {/* The grid of goal items here */}
+      <View style={[styles.infoCardWrapper]}>
+        <Text style={[styles.sectionTitle]}>Insights</Text>
+        <View style={styles.spacer} />
+        <View style={[styles.infoCards]}>
+          <InfoCard
+            title="Daily Goal"
+            bgColor="#008080"
+            data={dailyGoal}
+            pressCard={() =>
+              navigation.navigate(VIEWS.VIEW_DAILY_GOAL, {selectedDate})
+            }
+          />
+          <InfoCard
+            title="Daily Insight"
+            bgColor="#4682B4"
+            data={insight}
+            pressCard={() =>
+              navigation.navigate(VIEWS.VIEW_INSIGHT, {selectedDate})
+            }
+          />
+        </View>
+      </View>
+
       <View style={styles.transactionsContainer}>
+        <Text style={[styles.sectionTitle]}>Expenses</Text>
         <View style={styles.spacer} />
         <View
           style={{
@@ -146,7 +161,6 @@ const HomeView = ({navigation}: RouterProps) => {
                   <ItemCard
                     title={item.title}
                     content={item.description}
-                    transactionType={item.type}
                     // TODO: use the insight flag
                     // insight={!!insight}
                     deleteCard={() => removeTransaction(item.id, selectedDate)}
@@ -198,6 +212,19 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     position: 'relative',
   },
+  infoCardWrapper: {
+    marginVertical: 15,
+  },
+  infoCards: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 5,
+  },
+  sectionTitle: {
+    color: '#fff',
+    fontWeight: '300',
+    fontSize: 15,
+  },
   contentListContainer: {},
   insightWrapper: {
     display: 'flex',
@@ -223,7 +250,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   spacer: {
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   noTransactions: {
     color: '#212c35',

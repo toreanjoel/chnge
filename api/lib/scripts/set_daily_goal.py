@@ -26,7 +26,7 @@ if __name__ == '__main__':
     current_date = sys.argv[2]
     suggestion_data = sys.argv[3]
 
-    suggestion_path = '/users/' + user_id + '/transactions/history/' + current_date + '/daily-goal'
+    suggestion_path = '/users/' + user_id + '/transactions/history/' + current_date + '/dailyGoal'
     suggestion_ref = db.reference(suggestion_path)
     data = suggestion_ref.set(suggestion_data)
     

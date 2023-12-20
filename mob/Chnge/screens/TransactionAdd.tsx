@@ -17,7 +17,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {VIEWS} from '../constants/views';
-import {TransactionRating, TransactionType} from '../types/transactions';
+import {TransactionRating} from '../types/transactions';
 import {useAuth} from '../hooks/useAuth';
 import {FIREBASE_DB} from '../config/firebase';
 import {onValue, ref, update} from 'firebase/database';
@@ -43,7 +43,7 @@ const TransactionAdd = ({navigation}: any) => {
   }, [user]);
 
   // update transaction
-  async function addTransaction(type: TransactionType) {
+  async function addTransaction() {
     const id = uuid.v4();
     update(
       ref(
@@ -55,7 +55,6 @@ const TransactionAdd = ({navigation}: any) => {
         id,
         description,
         rating,
-        type,
         createdAt: moment().format(),
       },
     );
@@ -63,26 +62,21 @@ const TransactionAdd = ({navigation}: any) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <View style={styles.spacer} />
       <View style={styles.transactionActonContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate(VIEWS.HOME)}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.goBack()}>
           <FontAwesomeIcon size={20} icon={faArrowLeft} color="#fff" />
         </TouchableOpacity>
-        <View style={styles.spacerActionWrapper} />
+        <Text style={styles.headerTitle}>Add Expense</Text>
       </View>
-      <View style={styles.spacer} />
-      {/* Header container */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Add Transaction</Text>
-      </View>
-      <View style={styles.spacer} />
       <View style={styles.transactionAddContainer}>
         <ScrollView>
           <View style={styles.inputContainer}>
             <Text style={styles.inputField}>Title</Text>
             <TextInput
               placeholderTextColor={'#6E6E6E'}
-              placeholder={'Transacription name'}
+              placeholder={'Expense name'}
               value={title}
               style={styles.input}
               onChangeText={value => setTitle(value)}
@@ -90,14 +84,16 @@ const TransactionAdd = ({navigation}: any) => {
             <Text style={styles.inputField}>Description</Text>
             <TextInput
               placeholderTextColor={'#6E6E6E'}
-              placeholder={'About the Transaction'}
+              placeholder={'About the expense'}
               multiline
               numberOfLines={10}
               value={description}
               style={styles.inputArea}
               onChangeText={value => setDescription(value)}
             />
-            <Text style={styles.inputField}>Happy about it?</Text>
+            <Text style={styles.inputField}>
+              How do you feel about this expense?
+            </Text>
             <View style={styles.feelContainer}>
               <TouchableOpacity
                 style={[
@@ -120,26 +116,15 @@ const TransactionAdd = ({navigation}: any) => {
         </ScrollView>
         <View style={styles.actionContainer}>
           <TouchableOpacity
-            style={styles.addTransactionExpense}
+            style={styles.addExpense}
             onPress={() => {
-              addTransaction(TransactionType.expense)
+              addTransaction()
                 .then(() =>
                   Toast.show(`Successfully added ${title}`, Toast.SHORT),
                 )
                 .finally(() => navigation.navigate(VIEWS.HOME));
             }}>
-            <Text style={styles.actionText}>Expense</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.addTransactionIncome}
-            onPress={() => {
-              addTransaction(TransactionType.income)
-                .then(() =>
-                  Toast.show(`Successfully added ${title}`, Toast.SHORT),
-                )
-                .finally(() => navigation.navigate(VIEWS.HOME));
-            }}>
-            <Text style={styles.actionText}>Income</Text>
+            <Text style={styles.actionText}>Add</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -148,33 +133,31 @@ const TransactionAdd = ({navigation}: any) => {
 };
 
 const styles = StyleSheet.create({
-  transactionActonContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  spacerActionWrapper: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     backgroundColor: '#08141E',
     paddingHorizontal: 15,
   },
+  transactionActonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  iconButton: {
+    marginRight: 20,
+  },
   spacer: {
     paddingVertical: 10,
   },
   headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    flex: 1,
   },
-  headerText: {
+  headerTitle: {
     color: '#F1F6FB',
-    fontWeight: '100',
-    fontSize: 30,
+    fontWeight: '300',
+    fontSize: 22,
+    flex: 1,
+    alignSelf: 'center',
   },
   inputContainer: {
     flex: 1,
@@ -202,7 +185,6 @@ const styles = StyleSheet.create({
   inputField: {
     color: '#F1F6FB',
     paddingTop: 10,
-    fontWeight: '200',
   },
   feelContainer: {
     display: 'flex',
@@ -228,21 +210,13 @@ const styles = StyleSheet.create({
   ratingActive: {
     backgroundColor: '#6E6E6E',
   },
-  addTransactionExpense: {
+  addExpense: {
     flex: 1,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 9,
-    backgroundColor: '#E44747',
-  },
-  addTransactionIncome: {
-    flex: 1,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 9,
-    backgroundColor: '#00D585',
+    backgroundColor: '#168EE5',
   },
   transactionAddContainer: {
     display: 'flex',
@@ -251,6 +225,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     color: '#fff',
+    fontSize: 18,
   },
 });
 export default TransactionAdd;

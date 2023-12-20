@@ -28,12 +28,12 @@ defmodule ChngeApi.Servers.NotificationServer do
     {:ok, new_state}
   end
 
-  def handle_info({:seven_am, insight_date}, state) do
+  def handle_info({:seven_am, insight_data}, state) do
     Logger.info("fn handle_info: :seven_am listener")
     new_state = Map.put(state, :seven_am_sent, true)
 
     # process daily goal
-    process_daily_goal(new_state, insight_date)
+    process_daily_goal(new_state, insight_data)
 
     # check if we need to stop the process
     check_and_stop(new_state)
@@ -246,10 +246,12 @@ defmodule ChngeApi.Servers.NotificationServer do
         if !Enum.empty?(current_days_data) do
           insight_list = create_insight_list(history_data, current_date)
           current_day_items = Map.get(current_days_data, "items", %{})
+          current_days_goals = Map.get(current_days_data, "dailyGoal", "")
 
           {ai_status, resp} =
             ChngeApi.Core.Gpt.insight(
               Jason.encode!(current_day_items),
+              current_days_goals,
               Jason.encode!(insight_list)
             )
 
@@ -259,10 +261,11 @@ defmodule ChngeApi.Servers.NotificationServer do
               curr_time = DateTime.utc_now() |> DateTime.to_unix()
               {_, new_date} = Date.from_iso8601(current_date)
 
+              next_date = Date.to_string(Date.add(new_date, 1))
               ChngeApi.Core.Python.execute_file_with_params(@set_insight, [
                 state.id,
                 current_date,
-                Date.to_string(Date.add(new_date, 1)),
+                next_date,
                 resp
               ])
 
@@ -276,10 +279,11 @@ defmodule ChngeApi.Servers.NotificationServer do
                   timezone
                 )
 
+
               Logger.info("Scheduled next 7am, adding: #{next_seven_am - curr_time} seconds")
-              prev_insight_data = %{
+              insight_data = %{
                 insight: resp,
-                date: current_date
+                date: next_date
               }
 
               Process.send_after(self(), {:seven_am, prev_insight_data}, (next_seven_am - curr_time) * 1000)
@@ -301,7 +305,7 @@ defmodule ChngeApi.Servers.NotificationServer do
   end
 
   # process the history data
-  defp process_daily_goal(state, %{ insight: insight, date: prev_date_insight}) do
+  defp process_daily_goal(state, %{ insight: insight, date: insight_next_date}) do
     # Create the script to update the overview - use prev days context
     # Send Notification to have the user view (extra data for client to open view)
     {status, result} = ChngeApi.Core.Python.execute_file_with_params(@get_user_by_id, [state.id])
@@ -320,12 +324,12 @@ defmodule ChngeApi.Servers.NotificationServer do
               # set the daily suggestion
               ChngeApi.Core.Python.execute_file_with_params(@set_daily_goal, [
                 state.id,
-                prev_date_insight,
+                insight_next_date,
                 resp
               ])
 
               # sending push after we generated from AI
-              push_notification(state, :seven_am, %{date: prev_date_insight})
+              push_notification(state, :seven_am, %{date: insight_next_date})
 
               {:ok, "Successfully got daily goal data updated"}
 
@@ -353,9 +357,9 @@ defmodule ChngeApi.Servers.NotificationServer do
       # Parse the date string
       {:ok, date} = Date.from_iso8601(date_string)
 
-      # Check if the date is within the last 7 days but not the current date
-      # TODO: 7 days can be changed when we add payments
-      if Date.diff(current_date, date) <= 7 and Date.diff(current_date, date) > 0 do
+      # Check if the date is within the last 5 days but not the current date
+      # TODO: 5 days can be changed when we add payments
+      if Date.diff(current_date, date) <= 5 and Date.diff(current_date, date) > 0 do
         # Extract the insight
         insight = Map.get(data, "insight", "")
 

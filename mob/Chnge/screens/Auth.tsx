@@ -85,6 +85,7 @@ const Auth = () => {
                 name={VIEWS.VIEW_INSIGHT}
                 component={DailyInsight}
               />
+              <Stack.Screen name={VIEWS.ONBOARDING} component={Onboarding} />
               <Stack.Screen
                 name={VIEWS.VIEW_DAILY_GOAL}
                 component={DailyGoal}

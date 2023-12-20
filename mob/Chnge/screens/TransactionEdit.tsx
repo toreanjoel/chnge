@@ -16,7 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {VIEWS} from '../constants/views';
-import {TransactionRating, TransactionType} from '../types/transactions';
+import {TransactionRating} from '../types/transactions';
 import {ref, update} from 'firebase/database';
 import {useAuth} from '../hooks/useAuth';
 import {FIREBASE_DB} from '../config/firebase';
@@ -35,7 +35,7 @@ const TransactionAdd = ({navigation, route}: any) => {
   const {user} = useAuth();
 
   // update transaction
-  async function updateTransaction(type: TransactionType) {
+  async function updateTransaction() {
     update(
       ref(
         FIREBASE_DB,
@@ -45,26 +45,20 @@ const TransactionAdd = ({navigation, route}: any) => {
         title,
         description,
         rating,
-        type,
       },
     );
   }
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <View style={styles.spacer} />
       <View style={styles.transactionActonContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.goBack()}>
           <FontAwesomeIcon size={20} icon={faArrowLeft} color="#fff" />
         </TouchableOpacity>
-        <View style={styles.spacerActionWrapper} />
+        <Text style={styles.headerTitle}>Edit Transaction</Text>
       </View>
-      <View style={styles.spacer} />
-      {/* Header container */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Edit Transaction</Text>
-      </View>
-      <View style={styles.spacer} />
       <View style={styles.transactionAddContainer}>
         <ScrollView>
           <View style={styles.inputContainer}>
@@ -87,7 +81,7 @@ const TransactionAdd = ({navigation, route}: any) => {
               onChangeText={value => setDescription(value)}
             />
             <Text style={styles.inputField}>
-              Do you feel good aobut this transactions?
+              How do you feel about this expense?
             </Text>
             <View style={styles.feelContainer}>
               <TouchableOpacity
@@ -111,22 +105,15 @@ const TransactionAdd = ({navigation, route}: any) => {
         </ScrollView>
         <View style={styles.actionContainer}>
           <TouchableOpacity
-            style={styles.addTransactionExpense}
+            style={styles.addExpense}
             onPress={() => {
-              updateTransaction(TransactionType.expense)
-                .then(() => Toast.show('Expense update', Toast.SHORT))
+              updateTransaction()
+                .then(() =>
+                  Toast.show(`Successfully added ${title}`, Toast.SHORT),
+                )
                 .finally(() => navigation.navigate(VIEWS.HOME));
             }}>
-            <Text style={styles.actionText}>Expense</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.addTransactionIncome}
-            onPress={() => {
-              updateTransaction(TransactionType.income)
-                .then(() => Toast.show('Income update', Toast.SHORT))
-                .finally(() => navigation.navigate(VIEWS.HOME));
-            }}>
-            <Text style={styles.actionText}>Income</Text>
+            <Text style={styles.actionText}>Update</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -135,33 +122,31 @@ const TransactionAdd = ({navigation, route}: any) => {
 };
 
 const styles = StyleSheet.create({
-  transactionActonContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  spacerActionWrapper: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     backgroundColor: '#08141E',
     paddingHorizontal: 15,
   },
+  transactionActonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  iconButton: {
+    marginRight: 20,
+  },
   spacer: {
     paddingVertical: 10,
   },
   headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    flex: 1,
   },
-  headerText: {
+  headerTitle: {
     color: '#F1F6FB',
-    fontWeight: '100',
-    fontSize: 30,
+    fontWeight: '300',
+    fontSize: 22,
+    flex: 1,
+    alignSelf: 'center',
   },
   inputContainer: {
     flex: 1,
@@ -189,7 +174,6 @@ const styles = StyleSheet.create({
   inputField: {
     color: '#F1F6FB',
     paddingTop: 10,
-    fontWeight: '200',
   },
   feelContainer: {
     display: 'flex',
@@ -215,21 +199,13 @@ const styles = StyleSheet.create({
   ratingActive: {
     backgroundColor: '#6E6E6E',
   },
-  addTransactionExpense: {
+  addExpense: {
     flex: 1,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 9,
-    backgroundColor: '#E44747',
-  },
-  addTransactionIncome: {
-    flex: 1,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 9,
-    backgroundColor: '#00D585',
+    backgroundColor: '#168EE5',
   },
   transactionAddContainer: {
     display: 'flex',
@@ -238,6 +214,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     color: '#fff',
+    fontSize: 18,
   },
 });
 export default TransactionAdd;
