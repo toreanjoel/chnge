@@ -286,7 +286,7 @@ defmodule ChngeApi.Servers.NotificationServer do
                 date: next_date
               }
 
-              Process.send_after(self(), {:seven_am, prev_insight_data}, (next_seven_am - curr_time) * 1000)
+              Process.send_after(self(), {:seven_am, insight_data}, (next_seven_am - curr_time) * 1000)
 
               {:ok, "Successfully got overview data updated"}
 
@@ -345,6 +345,19 @@ defmodule ChngeApi.Servers.NotificationServer do
         Logger.info("There was an issue getting the details for user: #{state.id}")
         {:error, "No data found for user"}
     end
+  end
+
+  defp generate_daily_todo do
+    #TODO: Use this to create todo items use AI to look at the current daily generated and create JSON response format
+
+    # Below is the structure that we will save as a map
+    # DB path: /todo
+    %{
+      id: "uuid",
+      timestamp: "created timestamp",
+      title: "some title",
+      completed: false
+    }
   end
 
   # create a list of insight data that will be used as context data
