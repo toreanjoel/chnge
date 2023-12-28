@@ -10,7 +10,7 @@ import {useAuth} from '../hooks/useAuth';
 import Login from './Login';
 import Main from './Main';
 import Register from './Register';
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {update, ref} from 'firebase/database';
 import {FIREBASE_DB} from '../config/firebase';
@@ -27,9 +27,28 @@ const Stack = createNativeStackNavigator();
 
 const Auth = () => {
   const {user} = useAuth();
-  const navigationRef = useRef<NavigationContainerRef>(null);
-
   const isAuthenticated = !!user;
+  const navigationRef = useRef<NavigationContainerRef>(null);
+  const [hasOnboarded, setHasOnboarded] = useState(false);
+
+  // Check the init views
+  function initView() {
+    return hasOnboarded ? VIEWS.MAIN : VIEWS.ONBOARDING;
+  }
+
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      const onboarded = await AsyncStorage.getItem('ONBOARDED');
+
+      if (onboarded) {
+        await AsyncStorage.setItem('ONBOARDED', 'true');
+      }
+
+      setHasOnboarded(!!onboarded);
+    };
+
+    checkOnboarding();
+  }, []);
 
   if (user === undefined) {
     return (
@@ -76,16 +95,16 @@ const Auth = () => {
           }
         }}>
         <Stack.Navigator
-          initialRouteName={isAuthenticated ? VIEWS.MAIN : VIEWS.LOGIN}
+          initialRouteName={isAuthenticated ? initView() : VIEWS.LOGIN}
           screenOptions={{headerShown: false}}>
           {isAuthenticated ? (
             <>
+              <Stack.Screen name={VIEWS.ONBOARDING} component={Onboarding} />
               <Stack.Screen name={VIEWS.MAIN} component={Main} />
               <Stack.Screen
                 name={VIEWS.VIEW_INSIGHT}
                 component={DailyInsight}
               />
-              <Stack.Screen name={VIEWS.ONBOARDING} component={Onboarding} />
               <Stack.Screen
                 name={VIEWS.VIEW_DAILY_GOAL}
                 component={DailyGoal}

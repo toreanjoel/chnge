@@ -6,6 +6,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
+import Markdown from 'react-native-markdown-display';
 import {onValue, ref} from 'firebase/database';
 import {faX} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -50,9 +51,9 @@ const DailyInsight = ({navigation, route}: any) => {
         </View>
         <View style={styles.spacer} />
         <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <Text style={styles.content}>
+          <Markdown style={{body: styles.content}}>
             {formattedTextSplit(insightDetails)}
-          </Text>
+          </Markdown>
           <View style={styles.spacer} />
         </ScrollView>
       </View>

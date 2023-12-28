@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   actionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    paddingVertical: 20,
+    paddingVertical: 10,
     gap: 10,
   },
   actionButton: {

@@ -110,7 +110,7 @@ defmodule ChngeApi.Servers.NotificationServer do
 
             :one_pm ->
               Logger.info("Send push notification 1pm: #{user_id}")
-
+              # TODO: Make sure to change title and description to include information about tasks if there is
               ChngeApi.Core.Notification.send(
                 %{
                   title: ChngeApi.Core.Notification.random_afternoon_notification().title,
@@ -212,7 +212,7 @@ defmodule ChngeApi.Servers.NotificationServer do
           )
 
         Logger.info("Scheduled midnight, adding: #{next_midnight - curr_time} seconds")
-        Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
+        # Process.send_after(self(), :midnight, (next_midnight - curr_time) * 1000)
 
       _ ->
         Logger.info("There was an issue scheduling the process: #{state.id}")

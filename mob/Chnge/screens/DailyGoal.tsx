@@ -11,6 +11,7 @@ import {faX} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useAuth} from '../hooks/useAuth';
 import {FIREBASE_DB} from '../config/firebase';
+import Markdown from 'react-native-markdown-display';
 
 function formattedTextSplit(str: string) {
   return str.replace(/\\n/g, '\n');
@@ -50,7 +51,9 @@ const DailyGoal = ({navigation, route}: any) => {
         </View>
         <View style={styles.spacer} />
         <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <Text style={styles.content}>{formattedTextSplit(dailyGoal)}</Text>
+          <Markdown style={{body: styles.content}}>
+            {formattedTextSplit(dailyGoal)}
+          </Markdown>
           <View style={styles.spacer} />
         </ScrollView>
       </View>

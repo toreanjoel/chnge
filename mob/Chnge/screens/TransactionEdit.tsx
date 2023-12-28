@@ -30,6 +30,7 @@ const TransactionAdd = ({navigation, route}: any) => {
     id,
   } = route.params;
   const [title, setTitle] = useState(tTitle);
+  const [errors, setErrors] = useState({});
   const [description, setDescription] = useState(tDescription);
   const [rating, setRating] = useState(tRating);
   const {user} = useAuth();
