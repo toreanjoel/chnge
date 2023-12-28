@@ -33,7 +33,7 @@ const Auth = () => {
 
   // Check the init views
   function initView() {
-    return hasOnboarded ? VIEWS.MAIN : VIEWS.ONBOARDING;
+    return hasOnboarded ? VIEWS.LOGIN : VIEWS.ONBOARDING;
   }
 
   useEffect(() => {
@@ -95,11 +95,10 @@ const Auth = () => {
           }
         }}>
         <Stack.Navigator
-          initialRouteName={isAuthenticated ? initView() : VIEWS.LOGIN}
+          initialRouteName={isAuthenticated ? VIEWS.MAIN : initView()}
           screenOptions={{headerShown: false}}>
           {isAuthenticated ? (
             <>
-              <Stack.Screen name={VIEWS.ONBOARDING} component={Onboarding} />
               <Stack.Screen name={VIEWS.MAIN} component={Main} />
               <Stack.Screen
                 name={VIEWS.VIEW_INSIGHT}

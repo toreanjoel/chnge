@@ -121,7 +121,7 @@ const Onboarding = ({navigation}: RouterProps) => {
       bottomBarColor="#08141E"
       style={styles.container}
       showSkip={false}
-      onDone={() => navigation.navigate(VIEWS.MAIN)}
+      onDone={() => navigation.navigate(VIEWS.LOGIN)}
     />
   );
 };
